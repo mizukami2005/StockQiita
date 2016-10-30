@@ -10,7 +10,7 @@ import com.example.mizukamitakamasa.qiitaclient.dagger.DaggerAppComponet
 
 class QiitaClientApp : Application() {
 
-    val component: AppComponet by lazy {
-        DaggerAppComponet.create()
-    }
+  val component: AppComponet by lazy {
+    DaggerAppComponet.create()
+  }
 }

@@ -12,5 +12,5 @@ import javax.inject.Singleton
 @Singleton
 interface AppComponet {
 
-    fun inject(mainActivity: MainActivity)
+  fun inject(mainActivity: MainActivity)
 }
