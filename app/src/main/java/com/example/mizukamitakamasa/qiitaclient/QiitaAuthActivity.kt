@@ -10,9 +10,9 @@ import java.net.URI
  */
 class QiitaAuthActivity : AppCompatActivity() {
 
-    companion object {
+  companion object {
 
 //        fun intent(uri: URI): Intent =
 //                Intent(Intent.ACTION_VIEW, uri)
-    }
+  }
 }
