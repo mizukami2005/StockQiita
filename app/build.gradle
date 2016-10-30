@@ -1,0 +1,74 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 24
+    buildToolsVersion "24.0.1"
+    defaultConfig {
+        applicationId "com.example.mizukamitakamasa.qiitaclient"
+        minSdkVersion 17
+        targetSdkVersion 24
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    signingConfigs {
+        release {
+        }
+    }
+    buildTypes {
+        debug {
+            minifyEnabled false
+            manifestPlaceholders = [authUrl: System.getenv("AUTHURL"), clientId: System.getenv("CLIENTID"), redirectUrl: System.getenv("REDIRECTURL"),
+                                    scope: System.getenv("SCOPE"), status: System.getenv("STATE"), clientSecret: System.getenv("CLIENTSECRET")]
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+        }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+
+        // ここはテスト用
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
+    }
+    kapt {
+        generateStubs = true
+    }
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:3.0.1'
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:24.2.0'
+    testCompile 'junit:junit:4.12'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
+    def retrofitVersion = '2.1.0'
+    compile "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile "com.squareup.retrofit2:adapter-rxjava:$retrofitVersion"
+    compile "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    def rxlifecycleVersion = '0.8.0'
+    compile "com.trello:rxlifecycle-components:$rxlifecycleVersion"
+    compile "com.trello:rxlifecycle-kotlin:$rxlifecycleVersion"
+
+    def daggerVersion = '2.4'
+    compile "com.google.dagger:dagger:$daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$daggerVersion"
+    provided 'javax.annotation:jsr250-api:1.0'
+}
+repositories {
+    mavenCentral()
+}
