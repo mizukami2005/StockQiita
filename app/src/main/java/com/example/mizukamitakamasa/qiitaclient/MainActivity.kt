@@ -40,19 +40,19 @@ class MainActivity : RxAppCompatActivity() {
     var state = ""
     var clientSecret = ""
 
-    var progressBar : ProgressBar by Delegates.notNull()
+    var progressBar: ProgressBar by Delegates.notNull()
         private set
 
-    var queryEditText : EditText by Delegates.notNull()
+    var queryEditText: EditText by Delegates.notNull()
         private set
 
-    var searchButton : Button by Delegates.notNull()
+    var searchButton: Button by Delegates.notNull()
         private set
 
-    var loginButton : Button by Delegates.notNull()
+    var loginButton: Button by Delegates.notNull()
         private set
 
-    var listAdapter : ArticleListAdapter by Delegates.notNull()
+    var listAdapter: ArticleListAdapter by Delegates.notNull()
         private set
 
     var count: Int = 1
@@ -106,8 +106,9 @@ class MainActivity : RxAppCompatActivity() {
 
 
         listView.setOnScrollListener(object : AbsListView.OnScrollListener {
-//            var count: Int = 1
+            //            var count: Int = 1
             var isLoading: Boolean = true
+
             override fun onScroll(absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
                 if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
                     Log.e("latList", "latList")
@@ -185,7 +186,7 @@ class MainActivity : RxAppCompatActivity() {
             if (uri != null) {
                 val code: String = uri.getQueryParameter("code")
                 val state: String = uri.getQueryParameter("state")
-                var token : String = ""
+                var token: String = ""
                 Log.e("code", code)
                 Log.e("state", state)
                 Log.e("uri", uri.toString())
@@ -197,36 +198,36 @@ class MainActivity : RxAppCompatActivity() {
                     map.put("code", code)
                     Log.e("aaaaaaaaaaaaaaa", token)
                     qiitaClient.access(map)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .doAfterTerminate {
-                            Log.e("aaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaa")
-                            Log.e("bbbbbbbbbbbbbbbbbbbbb", token)
-                            qiitaClient.getUser("Bearer $token")
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .doAfterTerminate {  }
-                                .bindToLifecycle(this)
-                                .subscribe({
-                                    Log.e("get User", "User:" + it)
-                                    toast("User: $it")
-                                }, {
-                                    Log.e("no get User", "No:" + it)
-                                })
-                        }
-                        .bindToLifecycle(this)
-                        .subscribe({
-                            Log.e("finish", it.token)
-                            token = it.token
-                            val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-                            val editor = data.edit()
-                            editor.putString("token", token)
-                            editor.apply()
-                            toast("Finish: $it")
-                        }, {
-                            Log.e("エラー", "エラー" + it)
-                            toast("エラー: $it")
-                        })
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doAfterTerminate {
+                                Log.e("aaaaaaaaaaaaaaaaaaaaa", "aaaaaaaaaaaaaaa")
+                                Log.e("bbbbbbbbbbbbbbbbbbbbb", token)
+                                qiitaClient.getUser("Bearer $token")
+                                        .subscribeOn(Schedulers.io())
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .doAfterTerminate { }
+                                        .bindToLifecycle(this)
+                                        .subscribe({
+                                            Log.e("get User", "User:" + it)
+                                            toast("User: $it")
+                                        }, {
+                                            Log.e("no get User", "No:" + it)
+                                        })
+                            }
+                            .bindToLifecycle(this)
+                            .subscribe({
+                                Log.e("finish", it.token)
+                                token = it.token
+                                val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+                                val editor = data.edit()
+                                editor.putString("token", token)
+                                editor.apply()
+                                toast("Finish: $it")
+                            }, {
+                                Log.e("エラー", "エラー" + it)
+                                toast("エラー: $it")
+                            })
                 }
             }
         }
@@ -247,7 +248,7 @@ class MainActivity : RxAppCompatActivity() {
     private fun process(observable: Observable<Array<Article>>) {
         count = 1
         progressBar.visibility = View.VISIBLE
-                observable
+        observable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doAfterTerminate { progressBar.visibility = View.GONE }
