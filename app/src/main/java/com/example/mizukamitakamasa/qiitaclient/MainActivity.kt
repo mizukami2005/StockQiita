@@ -91,7 +91,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     private set
 
   val favBackground: View by lazy {
-    findViewById(R.id.fav_background) as View
+    findViewById(R.id.fav_background)
   }
 
   val favButton: FloatingActionButton by lazy {
@@ -108,6 +108,14 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
   val animatorUtils: AnimatorUtils by lazy {
     AnimatorUtils()
+  }
+
+  val fabTagsLayout: LinearLayout by lazy {
+    findViewById(R.id.fab_tags_layout) as LinearLayout
+  }
+
+  val fabTagsButton: FloatingActionButton by lazy {
+    findViewById(R.id.fav_tags_button) as FloatingActionButton
   }
 
   var count: Int = 1
@@ -191,6 +199,10 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       } else {
         toast("保存済み: $token")
       }
+    }
+
+    fabTagsButton.setOnClickListener {
+      toast("タグ一覧")
     }
 //    searchButton.setOnClickListener {
 //      process(articleClient.search("$count", queryEditText.text.toString()))
@@ -295,7 +307,16 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     anim.setDuration(200)
     anim.start()
 
+    fabTagsLayout.visibility = View.VISIBLE
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", -iconWhile * 2)
+    anim.setDuration(200)
+    anim.start()
+
     anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 0f, 1f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 0f, 1f)
     anim.setDuration(200)
     anim.start()
 
@@ -312,7 +333,15 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     anim.setDuration(200)
     anim.start()
 
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", 0f)
+    anim.setDuration(200)
+    anim.start()
+
     anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 1f, 0f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 1f, 0f)
     anim.setDuration(200)
     anim.start()
 
