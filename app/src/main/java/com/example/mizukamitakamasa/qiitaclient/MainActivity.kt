@@ -6,11 +6,21 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.TabLayout
+import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.view.PagerAdapter
+import android.support.v4.view.ViewPager
+import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.client.QiitaClient
+import com.example.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
 import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.model.User
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
@@ -26,7 +36,18 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
-class MainActivity : RxAppCompatActivity() {
+class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
+  override fun onPageScrollStateChanged(state: Int) {
+    Log.e("onPageScrollStateChanged", "onPageScrollStateChanged")
+  }
+
+  override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+    Log.e("onPageScrolled", "onPageScrolled")
+  }
+
+  override fun onPageSelected(position: Int) {
+    Log.e("onPageSelected", "onPageSelected")
+  }
 
   @Inject
   lateinit var articleClient: ArticleClient
@@ -40,19 +61,28 @@ class MainActivity : RxAppCompatActivity() {
   var state = ""
   var clientSecret = ""
 
-  var progressBar: ProgressBar by Delegates.notNull()
-    private set
+//  var progressBar: ProgressBar by Delegates.notNull()
+//    private set
 
-  var queryEditText: EditText by Delegates.notNull()
-    private set
+//  var queryEditText: EditText by Delegates.notNull()
+//    private set
 
-  var searchButton: Button by Delegates.notNull()
-    private set
+//  var searchButton: Button by Delegates.notNull()
+//    private set
 
   var loginButton: Button by Delegates.notNull()
     private set
 
   var listAdapter: ArticleListAdapter by Delegates.notNull()
+//    private set
+
+  var pagerAdapter: PagerAdapter by Delegates.notNull()
+    private set
+
+//  var viewPager: ViewPager by Delegates.notNull()
+//    private set
+
+  var bottomTabLayout: TabLayout by Delegates.notNull()
     private set
 
   var count: Int = 1
@@ -62,23 +92,51 @@ class MainActivity : RxAppCompatActivity() {
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_main)
 
+    // ToolBarの設定
+    val mToolBar: Toolbar = findViewById(R.id.toolbar) as Toolbar
+    mToolBar.title = "QiitaClient"
+    setSupportActionBar(mToolBar)
+
+    // TabLayoutの設定
+    val tabLayout: TabLayout = findViewById(R.id.tabs) as TabLayout
+    tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+
+    val viewPager: ViewPager = findViewById(R.id.pager) as ViewPager
+    val tags: MutableList<String> = mutableListOf("Recently", "Ruby", "Rails", "Gem", "RSpec")
+
+    // BottomTabLayoutの設定
+    bottomTabLayout = findViewById(R.id.bottom_tab_layout) as TabLayout
+    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Home"))
+    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Tag"))
+    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Account"))
+
+    val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+      override fun getItem(position: Int): Fragment {
+        return ViewPageListFragment.newInstance(tags[position])
+    }
+
+      override fun getCount(): Int {
+        return tags.size
+      }
+
+      override fun getPageTitle(position: Int): CharSequence {
+        return tags[position]
+      }
+    }
+
+    viewPager.addOnPageChangeListener(this)
+    viewPager.adapter = viewPagerAdapter
+
+    tabLayout.setupWithViewPager(viewPager)
+
     val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
     val token = data.getString("token", "")
     Log.e("token", token)
 
-    val listView: ListView = findViewById(R.id.list_view) as ListView
-    progressBar = findViewById(R.id.progress_bar) as ProgressBar
-    queryEditText = findViewById(R.id.query_edit_text) as EditText
-    searchButton = findViewById(R.id.search_button) as Button
-    loginButton = findViewById(R.id.login_button) as Button
-
-    listAdapter = ArticleListAdapter(application)
-
-    listView.adapter = listAdapter
-    listView.setOnItemClickListener { adapterView, view, position, id ->
-      val article = listAdapter.articles[position]
-      ArticleActivity.intent(this, article).let { startActivity(it) }
-    }
+//    progressBar = findViewById(R.id.progress_bar) as ProgressBar
+//    queryEditText = findViewById(R.id.query_edit_text) as EditText
+//    searchButton = findViewById(R.id.search_button) as Button
+//    loginButton = findViewById(R.id.login_button) as Button
 
     try {
       val appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
@@ -92,86 +150,22 @@ class MainActivity : RxAppCompatActivity() {
     } catch (e: PackageManager.NameNotFoundException) {
       e.printStackTrace()
     }
-    process(articleClient.recently("$count"))
-//        articleClient.checkStock("Bearer $token","0f6d7a7778c7b06220f5")
-//            .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
-//            .doAfterTerminate {  }
-//            .bindToLifecycle(this)
-//            .subscribe({
-//                toast("$it")
-//            }, {
-//                toast("エラー: $it")
-//            })
+//    process(articleClient.recently("$count"))
 
+//    searchButton.setOnClickListener {
+//      process(articleClient.search("$count", queryEditText.text.toString()))
+//    }
 
-    listView.setOnScrollListener(object : AbsListView.OnScrollListener {
-      //            var count: Int = 1
-      var isLoading: Boolean = true
-
-      override fun onScroll(absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
-          Log.e("latList", "latList")
-          count++
-          // データ取得処理
-          isLoading = false
-          if (queryEditText.text.toString().length != 0) {
-            Log.e("search", "search")
-            articleClient.search("$count", queryEditText.text.toString())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate {
-                  isLoading = true
-                }
-                .bindToLifecycle(this@MainActivity)
-                .subscribe({
-                  listAdapter.addList(it)
-                  listAdapter.notifyDataSetChanged()
-                  var position = listView.firstVisiblePosition
-                  var yOffset = listView.getChildAt(0).top
-                  listView.setSelectionFromTop(position, yOffset)
-                }, {
-                  toast("エラー: $it")
-                })
-          } else {
-            Log.e("recently", "recently")
-            articleClient.recently("$count")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate {
-                  isLoading = true
-                }
-                .bindToLifecycle(this@MainActivity)
-                .subscribe({
-                  listAdapter.addList(it)
-                  listAdapter.notifyDataSetChanged()
-                }, {
-                  toast("エラー: $it")
-                })
-          }
-
-        }
-
-      }
-
-      override fun onScrollStateChanged(absListView: AbsListView?, scrollState: Int) {
-      }
-    })
-
-    searchButton.setOnClickListener {
-      process(articleClient.search("$count", queryEditText.text.toString()))
-    }
-
-    loginButton.setOnClickListener {
-      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-      val token = data.getString("token", "")
-      if (token.length == 0) {
-        val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
-        startActivity(intent)
-      } else {
-        toast("保存済み: $token")
-      }
-    }
+//    loginButton.setOnClickListener {
+//      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+//      val token = data.getString("token", "")
+//      if (token.length == 0) {
+//        val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
+//        startActivity(intent)
+//      } else {
+//        toast("保存済み: $token")
+//      }
+//    }
   }
 
   override fun onResume() {
@@ -245,19 +239,21 @@ class MainActivity : RxAppCompatActivity() {
           user = User(id = "", name = userName, profileImageUrl = ""))
 
   // 通信処理
-  private fun process(observable: Observable<Array<Article>>) {
-    count = 1
-    progressBar.visibility = View.VISIBLE
-    observable
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doAfterTerminate { progressBar.visibility = View.GONE }
-        .bindToLifecycle(this)
-        .subscribe({
-          listAdapter.articles = it
-          listAdapter.notifyDataSetChanged()
-        }, {
-          toast("エラー: $it")
-        })
-  }
+//  private fun process(observable: Observable<Array<Article>>) {
+//    Log.e("ddddddddddddddd","dddddddddddddddd")
+//    count = 1
+//    progressBar.visibility = View.VISIBLE
+//    observable
+//        .subscribeOn(Schedulers.io())
+//        .observeOn(AndroidSchedulers.mainThread())
+//        .doAfterTerminate { progressBar.visibility = View.GONE }
+//        .bindToLifecycle(this)
+//        .subscribe({
+//          Log.e("regggggggggggggggg", "argsgewsf" + this)
+//          listAdapter.articles = it
+//          listAdapter.notifyDataSetChanged()
+//        }, {
+//          toast("エラー: $it")
+//        })
+//  }
 }
