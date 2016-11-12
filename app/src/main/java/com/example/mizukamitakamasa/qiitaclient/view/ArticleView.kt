@@ -40,20 +40,20 @@ class ArticleView : FrameLayout {
 
   val userIdTextView: TextView by bindView(R.id.user_id_text_view)
 
-  val folderImageView: ImageButton by bindView(R.id.folder_image_view)
+//  val folderImageView: ImageButton by bindView(R.id.folder_image_view)
 
   init {
     LayoutInflater.from(context).inflate(R.layout.view_article, this)
-    folderImageView.setOnClickListener {
-      Log.e("Helowween", "Helowween")
-    }
+//    folderImageView.setOnClickListener {
+//      Log.e("Helowween", "Helowween")
+//    }
   }
 
   fun setArticle(article: Article) {
     titleTextView.text = article.title
     userIdTextView.text = article.user.id
     Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
-    folderImageView.setImageResource(R.mipmap.ic_folder_white)
-    folderImageView.setBackgroundColor(Color.argb(255, 89, 187, 12))
+//    folderImageView.setImageResource(R.mipmap.ic_folder_white)
+//    folderImageView.setBackgroundColor(Color.argb(255, 89, 187, 12))
   }
 }

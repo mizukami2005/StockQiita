@@ -1,11 +1,14 @@
 package com.example.mizukamitakamasa.qiitaclient
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -23,6 +26,8 @@ import com.example.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.example.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
 import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.model.User
+import com.example.mizukamitakamasa.qiitaclient.util.AnimatorUtils
+import com.example.mizukamitakamasa.qiitaclient.util.PxDpUtil
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
@@ -38,7 +43,7 @@ import kotlin.properties.Delegates
 
 class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   override fun onPageScrollStateChanged(state: Int) {
-    Log.e("onPageScrollStateChanged", "onPageScrollStateChanged")
+    Log.e("PageScrollStateChanged", "PageScrollStateChanged")
   }
 
   override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
@@ -85,7 +90,41 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   var bottomTabLayout: TabLayout by Delegates.notNull()
     private set
 
+  val favBackground: View by lazy {
+    findViewById(R.id.fav_background)
+  }
+
+  val favButton: FloatingActionButton by lazy {
+    findViewById(R.id.fab_add) as FloatingActionButton
+  }
+
+  val fabLoginLayout: LinearLayout by lazy {
+    findViewById(R.id.fab_login_layout) as LinearLayout
+  }
+
+  val favLoginButton: FloatingActionButton by lazy {
+    findViewById(R.id.fav_login) as FloatingActionButton
+  }
+
+  val animatorUtils: AnimatorUtils by lazy {
+    AnimatorUtils()
+  }
+
+  val fabTagsLayout: LinearLayout by lazy {
+    findViewById(R.id.fab_tags_layout) as LinearLayout
+  }
+
+  val fabTagsButton: FloatingActionButton by lazy {
+    findViewById(R.id.fav_tags_button) as FloatingActionButton
+  }
+
   var count: Int = 1
+
+  enum class ButtonState {
+    OPEN, CLOSE
+  }
+
+  var buttonState: ButtonState = ButtonState.CLOSE
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -102,13 +141,13 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
     val viewPager: ViewPager = findViewById(R.id.pager) as ViewPager
-    val tags: MutableList<String> = mutableListOf("Recently", "Ruby", "Rails", "Gem", "RSpec")
+    val tags: MutableList<String> = mutableListOf("Recently", "Ruby", "Rails")
 
     // BottomTabLayoutの設定
-    bottomTabLayout = findViewById(R.id.bottom_tab_layout) as TabLayout
-    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Home"))
-    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Tag"))
-    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Account"))
+//    bottomTabLayout = findViewById(R.id.bottom_tab_layout) as TabLayout
+//    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Home"))
+//    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Tag"))
+//    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Account"))
 
     val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
       override fun getItem(position: Int): Fragment {
@@ -151,10 +190,34 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       e.printStackTrace()
     }
 //    process(articleClient.recently("$count"))
+    favLoginButton.setOnClickListener {
+      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+      val token = data.getString("token", "")
+      if (token.length == 0) {
+        val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
+        startActivity(intent)
+      } else {
+        toast("保存済み: $token")
+      }
+    }
 
+    fabTagsButton.setOnClickListener {
+      toast("タグ一覧")
+    }
 //    searchButton.setOnClickListener {
 //      process(articleClient.search("$count", queryEditText.text.toString()))
 //    }
+
+//    val buttonState = ButtonState.CLOSE
+    favButton.setOnClickListener {
+      val iconWhile = PxDpUtil().dpToPx(applicationContext, 66)
+
+      if (buttonState == ButtonState.CLOSE) {
+        fabOpen(iconWhile)
+      } else {
+        fabClose()
+      }
+    }
 
 //    loginButton.setOnClickListener {
 //      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
@@ -237,6 +300,59 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
           title = title,
           url = "https://kotlinlang.org/",
           user = User(id = "", name = userName, profileImageUrl = ""))
+
+  private fun fabOpen(iconWhile: Float) {
+    fabLoginLayout.visibility = View.VISIBLE
+    var anim = ObjectAnimator.ofFloat(fabLoginLayout, "translationY", -iconWhile)
+    anim.setDuration(200)
+    anim.start()
+
+    fabTagsLayout.visibility = View.VISIBLE
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", -iconWhile * 2)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 0f, 1f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 0f, 1f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(favButton, "rotation", 90f)
+    anim.setDuration(200)
+    anim.start()
+
+    buttonState = ButtonState.OPEN
+    favBackground.visibility = View.VISIBLE
+  }
+
+  private fun fabClose() {
+    var anim = ObjectAnimator.ofFloat(fabLoginLayout, "translationY", 0f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", 0f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 1f, 0f)
+    anim.setDuration(200)
+    anim.start()
+
+    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 1f, 0f)
+    anim.setDuration(200)
+    anim.start()
+
+
+    anim = ObjectAnimator.ofFloat(favButton, "rotation", 45f)
+    anim.setDuration(200)
+    anim.start()
+
+    buttonState = ButtonState.CLOSE
+    favBackground.visibility = View.GONE
+  }
 
   // 通信処理
 //  private fun process(observable: Observable<Array<Article>>) {

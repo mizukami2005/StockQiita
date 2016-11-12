@@ -13,7 +13,7 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary" />
+        android:background="@color/colorQiita" />
 
     <!--<LinearLayout-->
         <!--android:layout_width="match_parent"-->
@@ -53,8 +53,73 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tabs"
-        android:layout_above="@+id/bottom_tab_layout"/>
+        android:layout_below="@+id/tabs"/>
+
+    <View
+        android:id="@+id/fav_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.9"
+        android:background="@color/fab_background"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/fab_login_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/login_text"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="ログイン"
+            android:textSize="20dp"/>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fav_login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_account_circle_white"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fab_tags_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tags_text"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="タグ一覧"
+            android:textSize="20dp"/>
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fav_tags_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_local_offer_white"/>
+
+    </LinearLayout>
 
     <!--<FrameLayout-->
         <!--android:layout_width="match_parent"-->
@@ -73,15 +138,29 @@
             <!--android:layout_gravity="center"-->
             <!--android:visibility="gone"/>-->
     <!--</FrameLayout>-->
-    <android.support.design.widget.TabLayout
-        android:id="@+id/bottom_tab_layout"
-        android:layout_width="match_parent"
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:rotation="45"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/colorPrimary"/>
+
+    <!--<android.support.design.widget.TabLayout-->
+        <!--android:id="@+id/bottom_tab_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentBottom="true"/>-->
     <!--<android.support.v4.view.ViewPager-->
         <!--android:id="@+id/bottom_view_pager"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="0dp"-->
         <!--android:layout_below="@+id/toolbar"-->
         <!--android:layout_above="@id/bottom_tab_layout"/>-->
+
 </RelativeLayout>

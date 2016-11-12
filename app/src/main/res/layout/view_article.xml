@@ -57,13 +57,13 @@
         android:layout_marginTop="6dp"
         android:layout_marginStart="15dp"/>
 
-    <ImageButton
-        android:id="@+id/folder_image_view"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:focusable="false"
-        android:src="@mipmap/ic_folder_white"
-        tools:background="@drawable/button"
-        android:layout_below="@+id/title_text_view"
-        android:layout_alignParentEnd="true"/>
+    <!--<ImageButton-->
+        <!--android:id="@+id/folder_image_view"-->
+        <!--android:layout_width="60dp"-->
+        <!--android:layout_height="60dp"-->
+        <!--android:focusable="false"-->
+        <!--android:src="@mipmap/ic_folder_white"-->
+        <!--tools:background="@drawable/button"-->
+        <!--android:layout_below="@+id/title_text_view"-->
+        <!--android:layout_alignParentEnd="true"/>-->
 </RelativeLayout>
