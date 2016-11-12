@@ -20,4 +20,7 @@ interface ArticleClient {
 
     @GET("/api/v2/items/{item_id}/stock")
     fun checkStock(@Header("Authorization") authorization: String, @Path("item_id") item_id: String) : Observable<String>
+
+    @GET("/api/v2/tags/{tag_id}/items")
+    fun tagItems(@Path("tag_id") tag_id: String, @Query("page") number: String = "1") : Observable<Array<Article>>
 }
