@@ -1,10 +1,7 @@
 package com.example.mizukamitakamasa.qiitaclient.client
 
 import com.example.mizukamitakamasa.qiitaclient.model.Article
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 import rx.Observable
 
 /**
@@ -23,4 +20,7 @@ interface ArticleClient {
 
     @GET("/api/v2/tags/{tag_id}/items")
     fun tagItems(@Path("tag_id") tag_id: String, @Query("page") number: String = "1") : Observable<Array<Article>>
+
+    @PUT("/api/v2/items/{item_id}/stock")
+    fun stock(@Header("Authorization") authorization: String, @Path("item_id") item_id: String): Observable<String>
 }
