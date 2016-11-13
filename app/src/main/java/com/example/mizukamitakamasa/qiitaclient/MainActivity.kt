@@ -28,6 +28,7 @@ import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.model.User
 import com.example.mizukamitakamasa.qiitaclient.util.AnimatorUtils
 import com.example.mizukamitakamasa.qiitaclient.util.PxDpUtil
+import com.example.mizukamitakamasa.qiitaclient.util.Config
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
@@ -178,15 +179,13 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 //    loginButton = findViewById(R.id.login_button) as Button
 
     try {
-      val appInfo = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA)
-      authURL = appInfo.metaData.getString("auth_url")
-      clientID = appInfo.metaData.getString("client_id")
-      redirectURL = appInfo.metaData.getString("redirect_url")
-      scope = appInfo.metaData.getString("scope")
-      state = appInfo.metaData.getString("status")
-      clientSecret = appInfo.metaData.getString("client_secret")
-
-    } catch (e: PackageManager.NameNotFoundException) {
+        authURL = Config().authUrl()
+        clientID = Config().clientId()
+        redirectURL = Config().redirectUrl()
+        scope = Config().scope()
+        state = Config().state()
+        clientSecret = Config().clientSecret()
+    } catch (e: Exception) {
       e.printStackTrace()
     }
 //    process(articleClient.recently("$count"))
