@@ -23,4 +23,7 @@ interface ArticleClient {
 
     @PUT("/api/v2/items/{item_id}/stock")
     fun stock(@Header("Authorization") authorization: String, @Path("item_id") item_id: String): Observable<String>
+
+    @DELETE("/api/v2/items/{item_id}/stock")
+    fun unStock(@Header("Authorization") authorization: String, @Path("item_id") item_id: String): Observable<String>
 }
