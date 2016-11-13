@@ -1,20 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.example.mizukamitakamasa.qiitaclient.ArticleActivity">
+    android:layout_width="match_parent">
 
-    <com.example.mizukamitakamasa.qiitaclient.view.ArticleView
-        android:id="@+id/article_view"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
+        android:layout_height="wrap_content">
 
-    <WebView
-        android:id="@+id/web_view"
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:contentScrim="#999999"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <com.example.mizukamitakamasa.qiitaclient.view.ArticleView
+            android:id="@+id/article_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
+
+            <!--<android.support.v7.widget.Toolbar-->
+                <!--android:id="@+id/toolbar"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="?attr/actionBarSize"-->
+                <!--app:layout_collapseMode="pin"-->
+                <!--android:titleTextAppearance="@style/TextAppearance.AppCompat.Small" />-->
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"></WebView>
-</LinearLayout>
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <WebView
+            android:id="@+id/web_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/stock_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/app_bar"
+        android:src="@mipmap/ic_folder_white"
+        app:layout_anchorGravity="bottom|right|end"
+        app:backgroundTint="@color/colorQiita" />
+
+</android.support.design.widget.CoordinatorLayout>
