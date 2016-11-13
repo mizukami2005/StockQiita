@@ -5,4 +5,5 @@
     <color name="colorAccent">#FF4081</color>
     <color name="colorQiita">#59bb0c</color>
     <color name="fab_background">#FFFFFF</color>
+    <color name="stocked_article">#C9302C</color>
 </resources>
