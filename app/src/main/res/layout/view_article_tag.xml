@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_list_tag"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    android:padding="@dimen/activity_vertical_margin"
+    tools:context="com.example.mizukamitakamasa.qiitaclient.ListTagActivity">
+
+    <ImageView
+        android:id="@+id/tag_image_view"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        tools:background="#f00"/>
+
+    <TextView
+        android:id="@+id/tag_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_toEndOf="@+id/tag_image_view"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        tools:text="記事のタグ名"/>
+
+    <TextView
+        android:id="@+id/followers_count_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/tag_name_text_view"
+        android:layout_below="@+id/tag_name_text_view"
+        android:layout_marginTop="8dp"
+        android:textColor="@android:color/black"
+        android:textSize="14sp"
+        tools:text="1"/>
+
+    <CheckBox
+        android:id="@+id/tag_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:focusable="false"
+        android:clickable="false"
+        android:checked="false"/>
+
+</RelativeLayout>
