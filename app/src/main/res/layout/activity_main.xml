@@ -77,7 +77,8 @@
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="4dp"
             android:text="ログイン"
             android:textSize="20dp"/>
 
@@ -86,8 +87,8 @@
             android:id="@+id/fav_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginRight="12dp"
             android:src="@drawable/ic_account_circle_white"/>
 
     </LinearLayout>
@@ -106,7 +107,8 @@
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="4dp"
             android:text="タグ一覧"
             android:textSize="20dp"/>
 
@@ -115,8 +117,8 @@
             android:id="@+id/fav_tags_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="10dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginRight="12dp"
             android:src="@drawable/ic_local_offer_white"/>
 
     </LinearLayout>
@@ -145,8 +147,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginRight="12dp"
         android:rotation="45"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimary"/>
