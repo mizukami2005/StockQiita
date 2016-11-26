@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.widget.CheckBox
 import android.widget.ListView
@@ -27,6 +28,10 @@ class ListTagActivity : AppCompatActivity() {
     ArticleTagListAdapter(applicationContext)
   }
 
+  val homeButton: FloatingActionButton by lazy {
+    findViewById(R.id.home_button) as FloatingActionButton
+  }
+
   var count = 1
 
   val checkTagList: MutableSet<String> = mutableSetOf()
@@ -44,6 +49,11 @@ class ListTagActivity : AppCompatActivity() {
     super.onCreate(savedInstanceState)
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_list_tag)
+
+    val saveTagLists = TagUtils().loadName(applicationContext, "TAG")
+    for (tag in saveTagLists) {
+      checkTagList += tag
+    }
 
     val listView: ListView = findViewById(R.id.list_view) as ListView
     getTags(articleClient.tags("$count"))
@@ -65,6 +75,10 @@ class ListTagActivity : AppCompatActivity() {
       Log.e("TAG", articleTag.id)
       Log.e("checkTagList", checkTagList.toString())
       TagUtils().saveName(applicationContext, "TAG", checkTagList)
+    }
+
+    homeButton.setOnClickListener {
+      finish()
     }
   }
 
