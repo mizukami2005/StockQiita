@@ -8,9 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ListView
+import android.widget.ProgressBar
 import com.example.mizukamitakamasa.qiitaclient.*
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
+import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -34,6 +36,10 @@ class ViewPageListFragment: Fragment() {
   var listView: ListView by Delegates.notNull()
     private set
 
+  val progressBar: ProgressBar by lazy {
+    activity.findViewById(R.id.progress_bar) as ProgressBar
+  }
+
   var count = 1
   var isLoading = true
 
@@ -41,31 +47,70 @@ class ViewPageListFragment: Fragment() {
     observable
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate { isLoading = true }
+      .doAfterTerminate {
+        isLoading = true
+        progressBar.visibility = View.GONE
+      }
       .bindToLifecycle(MainActivity())
       .subscribe({
-        listAdapter.addList(it)
+        listAdapter.articles = it
         listAdapter.notifyDataSetChanged()
-        var position = listView.firstVisiblePosition
-        var yOffset = listView.getChildAt(0).top
-        listView.setSelectionFromTop(position, yOffset)
       }, {
         Log.e("error", "error: $it")
       })
+    Log.e("getItems", "getItems")
+  }
 
+  private fun getAddItems(observable: Observable<Array<Article>>) {
+    observable
+      .subscribeOn(Schedulers.io())
+      .observeOn(AndroidSchedulers.mainThread())
+      .doAfterTerminate { isLoading = true }
+      .bindToLifecycle(MainActivity())
+        .subscribe({
+          listAdapter.addList(it)
+          listAdapter.notifyDataSetChanged()
+          var position = listView.firstVisiblePosition
+          var yOffset = listView.getChildAt(0).top
+          listView.setSelectionFromTop(position, yOffset)
+        }, {
+          Log.e("error", "error: $it")
+        })
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     (context.applicationContext as QiitaClientApp).component.inject(this)
+    Log.e("onCreateView", "onCreateView")
 
+    listView = inflater.inflate(R.layout.fragment_view_page_list, container, false) as ListView
+    init()
+
+    return listView
+  }
+
+  companion object {
+    fun newInstance(tag: String): ViewPageListFragment {
+      Log.e("newInstance", "newInstance")
+      val args = Bundle()
+      args.putString("tag", tag)
+      val fragment = ViewPageListFragment()
+      fragment.arguments = args
+      return fragment
+    }
+  }
+
+  fun init() {
     var tag = arguments.getString("tag", "Ruby")
     if (tag == "Recently") {
+      Log.e("Recently", "Recently")
+      progressBar.visibility = View.VISIBLE
       getItems(articleClient.recently("$count"))
     } else {
+      Log.e("else", "else")
       getItems(articleClient.tagItems(tag, "$count"))
     }
 
-    listView = inflater.inflate(R.layout.fragment_view_page_list, container, false) as ListView
+    listView.adapter = listAdapter
     listView.setOnItemClickListener { adapterView, view, position, id ->
       val article = listAdapter.articles[position]
       ArticleActivity.intent(context, article).let { startActivity(it) }
@@ -76,10 +121,10 @@ class ViewPageListFragment: Fragment() {
           isLoading = false
           if (tag == "Recently") {
             count++
-            getItems(articleClient.recently("$count"))
+            getAddItems(articleClient.recently("$count"))
           } else {
             count++
-            getItems(articleClient.tagItems(tag, "$count"))
+            getAddItems(articleClient.tagItems(tag, "$count"))
           }
         }
       }
@@ -87,18 +132,5 @@ class ViewPageListFragment: Fragment() {
       override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
       }
     })
-
-    listView.adapter = listAdapter
-    return listView
-  }
-
-  companion object {
-    fun newInstance(tag: String): ViewPageListFragment {
-      val args = Bundle()
-      args.putString("tag", tag)
-      val fragment = ViewPageListFragment()
-      fragment.arguments = args
-      return fragment
-    }
   }
 }
