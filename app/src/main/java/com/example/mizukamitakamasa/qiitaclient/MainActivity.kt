@@ -29,16 +29,18 @@ import com.example.mizukamitakamasa.qiitaclient.model.User
 import com.example.mizukamitakamasa.qiitaclient.util.AnimatorUtils
 import com.example.mizukamitakamasa.qiitaclient.util.PxDpUtil
 import com.example.mizukamitakamasa.qiitaclient.util.Config
+import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import org.json.JSONArray
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.io.InputStream
-import java.util.*
+import java.util.*  
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -141,8 +143,17 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     val tabLayout: TabLayout = findViewById(R.id.tabs) as TabLayout
     tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
 
+//    val prefs = getSharedPreferences("tag", Context.MODE_PRIVATE)
+//    val tagLists = prefs.getStringSet("tag", mutableSetOf())
+//    val tagLists = loadTagList(applicationContext, "tag")
+    val tagLists = TagUtils().loadName(applicationContext, "TAG")
+    Log.e("tagList", tagLists.toString())
+
     val viewPager: ViewPager = findViewById(R.id.pager) as ViewPager
-    val tags: MutableList<String> = mutableListOf("Recently", "Ruby", "Rails")
+    val tags: MutableList<String> = mutableListOf("Recently")
+    for (tag in tagLists) {
+      tags += tag
+    }
 
     // BottomTabLayoutの設定
 //    bottomTabLayout = findViewById(R.id.bottom_tab_layout) as TabLayout
@@ -173,6 +184,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     val token = data.getString("token", "")
     Log.e("token", token)
 
+//    val tagList = loadTagList(applicationContext, "tag")
+
+
 //    progressBar = findViewById(R.id.progress_bar) as ProgressBar
 //    queryEditText = findViewById(R.id.query_edit_text) as EditText
 //    searchButton = findViewById(R.id.search_button) as Button
@@ -201,7 +215,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     fabTagsButton.setOnClickListener {
-      toast("タグ一覧")
+      val tags = arrayListOf("Ruby", "Rails")
+      ListTagActivity.intent(applicationContext, tags).let { startActivity(it) }
+//      toast("タグ一覧")
     }
 //    searchButton.setOnClickListener {
 //      process(articleClient.search("$count", queryEditText.text.toString()))
@@ -351,6 +367,11 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     buttonState = ButtonState.CLOSE
     favBackground.visibility = View.GONE
+  }
+
+  private fun loadTagList(context: Context, key: String): MutableSet<String> {
+    val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
+    return prefs.getStringSet(key, mutableSetOf())
   }
 
   // 通信処理
