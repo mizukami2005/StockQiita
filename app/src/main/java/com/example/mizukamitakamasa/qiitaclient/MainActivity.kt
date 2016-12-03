@@ -14,6 +14,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.Toolbar
@@ -321,13 +322,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   private fun getAuthURL(authURL: String, clientID: String, scope: String, status: String): Uri =
       Uri.parse("$authURL?client_id=$clientID&scope=$scope&state=$status")
 
-  // ダミー記事を生成するメソッド
-  private fun dummyArticle(title: String, userName: String): Article =
-      Article(id = "",
-          title = title,
-          url = "https://kotlinlang.org/",
-          user = User(id = "", name = userName, profileImageUrl = ""))
-
   private fun fabOpen(iconWhile: Float) {
     fabLoginLayout.visibility = View.VISIBLE
     var anim = ObjectAnimator.ofFloat(fabLoginLayout, "translationY", -iconWhile)
@@ -393,7 +387,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       tags += tag
     }
 
-    val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+    val viewPagerAdapter: FragmentStatePagerAdapter = object : FragmentStatePagerAdapter(supportFragmentManager) {
       override fun getItem(position: Int): Fragment {
         return ViewPageListFragment.newInstance(tags[position])
       }

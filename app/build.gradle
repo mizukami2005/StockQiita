@@ -68,6 +68,8 @@ dependencies {
     compile "com.google.dagger:dagger:$daggerVersion"
     kapt "com.google.dagger:dagger-compiler:$daggerVersion"
     provided 'javax.annotation:jsr250-api:1.0'
+
+    compile 'com.github.mukeshsolanki:MarkdownView-Android:1.0.3'
 }
 repositories {
     mavenCentral()

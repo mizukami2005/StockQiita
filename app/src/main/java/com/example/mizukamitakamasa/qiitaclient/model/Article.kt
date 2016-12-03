@@ -10,13 +10,14 @@ import android.os.Parcelable
 data class Article(val id: String,
                    val title: String,
                    val url: String,
+                   val body: String,
                    val user: User) : Parcelable {
 
   companion object {
     @JvmField
     val CREATOR: Parcelable.Creator<Article> = object : Parcelable.Creator<Article> {
       override fun createFromParcel(source: Parcel): Article = source.run {
-        Article(readString(), readString(), readString(), readParcelable(Article::class.java.classLoader))
+        Article(readString(), readString(), readString(), readString(), readParcelable(Article::class.java.classLoader))
       }
 
       override fun newArray(size: Int): Array<Article?> = arrayOfNulls(size)
@@ -30,6 +31,7 @@ data class Article(val id: String,
       writeString(id)
       writeString(title)
       writeString(url)
+      writeString(body)
       writeParcelable(user, flags)
     }
   }

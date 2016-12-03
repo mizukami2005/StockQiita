@@ -13,6 +13,7 @@ import android.webkit.WebView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
+import com.mukesh.MarkdownView
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -42,11 +43,11 @@ class ArticleActivity : AppCompatActivity() {
 //    val collapsongToolBarLayout = findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
     val stockButton = findViewById(R.id.stock_button) as FloatingActionButton
     val articleView = findViewById(R.id.article_view) as ArticleView
-    val webView = findViewById(R.id.web_view) as WebView
+    val markdownView = findViewById(R.id.markdown_view) as MarkdownView
 
     val article: Article = intent.getParcelableExtra(ARTICLE_EXTRA)
     articleView.setArticle(article)
-    webView.loadUrl(article.url)
+    markdownView.setMarkDownText(article.body)
 
     val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
     val token = data.getString("token", "")
