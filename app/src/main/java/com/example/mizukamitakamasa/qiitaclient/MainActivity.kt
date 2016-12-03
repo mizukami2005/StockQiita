@@ -2,6 +2,7 @@ package com.example.mizukamitakamasa.qiitaclient
 
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -40,7 +41,7 @@ import rx.schedulers.Schedulers
 import java.io.BufferedInputStream
 import java.io.FileInputStream
 import java.io.InputStream
-import java.util.*  
+import java.util.*
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -121,6 +122,14 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     findViewById(R.id.fav_tags_button) as FloatingActionButton
   }
 
+  val tabLayout: TabLayout by lazy {
+    findViewById(R.id.tabs) as TabLayout
+  }
+
+  val viewPager: ViewPager by lazy {
+    findViewById(R.id.pager) as ViewPager
+  }
+
   var count: Int = 1
 
   enum class ButtonState {
@@ -140,20 +149,22 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     setSupportActionBar(mToolBar)
 
     // TabLayoutの設定
-    val tabLayout: TabLayout = findViewById(R.id.tabs) as TabLayout
+//    val tabLayout: TabLayout = findViewById(R.id.tabs) as TabLayout
     tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+
+    init()
 
 //    val prefs = getSharedPreferences("tag", Context.MODE_PRIVATE)
 //    val tagLists = prefs.getStringSet("tag", mutableSetOf())
 //    val tagLists = loadTagList(applicationContext, "tag")
-    val tagLists = TagUtils().loadName(applicationContext, "TAG")
-    Log.e("tagList", tagLists.toString())
+//    val tagLists = TagUtils().loadName(applicationContext, "TAG")
+//    Log.e("tagList", tagLists.toString())
 
-    val viewPager: ViewPager = findViewById(R.id.pager) as ViewPager
-    val tags: MutableList<String> = mutableListOf("Recently")
-    for (tag in tagLists) {
-      tags += tag
-    }
+//    val viewPager: ViewPager = findViewById(R.id.pager) as ViewPager
+//    val tags: MutableList<String> = mutableListOf("Recently")
+//    for (tag in tagLists) {
+//      tags += tag
+//    }
 
     // BottomTabLayoutの設定
 //    bottomTabLayout = findViewById(R.id.bottom_tab_layout) as TabLayout
@@ -161,24 +172,24 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 //    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Tag"))
 //    bottomTabLayout.addTab(bottomTabLayout.newTab().setText("Account"))
 
-    val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
-      override fun getItem(position: Int): Fragment {
-        return ViewPageListFragment.newInstance(tags[position])
-    }
-
-      override fun getCount(): Int {
-        return tags.size
-      }
-
-      override fun getPageTitle(position: Int): CharSequence {
-        return tags[position]
-      }
-    }
-
-    viewPager.addOnPageChangeListener(this)
-    viewPager.adapter = viewPagerAdapter
-
-    tabLayout.setupWithViewPager(viewPager)
+//    val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+//      override fun getItem(position: Int): Fragment {
+//        return ViewPageListFragment.newInstance(tags[position])
+//    }
+//
+//      override fun getCount(): Int {
+//        return tags.size
+//      }
+//
+//      override fun getPageTitle(position: Int): CharSequence {
+//        return tags[position]
+//      }
+//    }
+//
+//    viewPager.addOnPageChangeListener(this)
+//    viewPager.adapter = viewPagerAdapter
+//
+//    tabLayout.setupWithViewPager(viewPager)
 
     val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
     val token = data.getString("token", "")
@@ -216,7 +227,8 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     fabTagsButton.setOnClickListener {
       val tags = arrayListOf("Ruby", "Rails")
-      ListTagActivity.intent(applicationContext, tags).let { startActivity(it) }
+      val requestCode = 1001
+      ListTagActivity.intent(applicationContext, tags).let { startActivityForResult(it, requestCode) }
 //      toast("タグ一覧")
     }
 //    searchButton.setOnClickListener {
@@ -372,6 +384,43 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   private fun loadTagList(context: Context, key: String): MutableSet<String> {
     val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
     return prefs.getStringSet(key, mutableSetOf())
+  }
+
+  private fun init() {
+    val tagLists = TagUtils().loadName(applicationContext, "TAG")
+    val tags: MutableList<String> = mutableListOf("Recently")
+    for (tag in tagLists) {
+      tags += tag
+    }
+
+    val viewPagerAdapter: FragmentPagerAdapter = object : FragmentPagerAdapter(supportFragmentManager) {
+      override fun getItem(position: Int): Fragment {
+        return ViewPageListFragment.newInstance(tags[position])
+      }
+
+      override fun getCount(): Int {
+        return tags.size
+      }
+
+      override fun getPageTitle(position: Int): CharSequence {
+        return tags[position]
+      }
+    }
+
+    viewPager.addOnPageChangeListener(this)
+    viewPager.adapter = viewPagerAdapter
+
+    tabLayout.setupWithViewPager(viewPager)
+  }
+
+  public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+    super.onActivityResult(requestCode, resultCode, intent)
+
+    if (requestCode == 1001) {
+      if (resultCode == Activity.RESULT_OK) {
+        init()
+      }
+    }
   }
 
   // 通信処理

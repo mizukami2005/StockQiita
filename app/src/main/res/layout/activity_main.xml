@@ -123,24 +123,6 @@
 
     </LinearLayout>
 
-    <!--<FrameLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1">-->
-
-        <!--<ListView-->
-            <!--android:id="@+id/list_view"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"></ListView>-->
-
-        <!--<ProgressBar-->
-            <!--android:id="@+id/progress_bar"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:visibility="gone"/>-->
-    <!--</FrameLayout>-->
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_add"
         android:layout_width="wrap_content"
@@ -164,5 +146,12 @@
         <!--android:layout_height="0dp"-->
         <!--android:layout_below="@+id/toolbar"-->
         <!--android:layout_above="@id/bottom_tab_layout"/>-->
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

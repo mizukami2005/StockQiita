@@ -1,11 +1,13 @@
 package com.example.mizukamitakamasa.qiitaclient
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
+import android.view.KeyEvent
 import android.widget.CheckBox
 import android.widget.ListView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
@@ -78,8 +80,21 @@ class ListTagActivity : AppCompatActivity() {
     }
 
     homeButton.setOnClickListener {
+      val intent = intent
+      setResult(Activity.RESULT_OK, intent)
       finish()
     }
+  }
+
+  override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+    if (keyCode == KeyEvent.KEYCODE_BACK) {
+      Log.e("back", "back")
+      val intent = intent
+      setResult(Activity.RESULT_OK, intent)
+      finish()
+      return true
+    }
+    return false
   }
 
   private fun getTags(observable: Observable<Array<ArticleTag>>) {
