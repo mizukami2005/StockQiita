@@ -27,24 +27,6 @@
         </activity>
         <activity android:name=".ArticleActivity">
         </activity>
-        <meta-data
-            android:name="auth_url"
-            android:value="${authUrl}"></meta-data>
-        <meta-data
-            android:name="client_id"
-            android:value="${clientId}"></meta-data>
-        <meta-data
-            android:name="redirect_url"
-            android:value="${redirectUrl}"></meta-data>
-        <meta-data
-            android:name="scope"
-            android:value="${scope}"></meta-data>
-        <meta-data
-            android:name="status"
-            android:value="${status}"></meta-data>
-        <meta-data
-            android:name="client_secret"
-            android:value="${clientSecret}"></meta-data>
     </application>
 
 </manifest>

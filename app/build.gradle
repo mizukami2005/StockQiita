@@ -19,8 +19,6 @@ android {
     buildTypes {
         debug {
             minifyEnabled false
-            manifestPlaceholders = [authUrl: System.getenv("AUTHURL"), clientId: System.getenv("CLIENTID"), redirectUrl: System.getenv("REDIRECTURL"),
-                                    scope: System.getenv("SCOPE"), status: System.getenv("STATE"), clientSecret: System.getenv("CLIENTSECRET")]
             signingConfig signingConfigs.debug
         }
         release {
