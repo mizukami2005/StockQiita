@@ -85,10 +85,10 @@ class ArticleActivity : AppCompatActivity() {
           .bindToLifecycle(MainActivity())
           .subscribe({
             checkStock = true
-            toast("stock: $it")
+            toast("ストックしました")
           }, {
             checkStock = false
-            toast("stock出来ませんでした: $it")
+            toast("ストック出来ませんでした")
           })
       } else if (token.length != 0 && checkStock) {
         articleClient.unStock("Bearer $token", article.id)
@@ -104,7 +104,7 @@ class ArticleActivity : AppCompatActivity() {
           .bindToLifecycle(MainActivity())
           .subscribe({
             checkStock = false
-            toast("unstock: $it")
+            toast("ストックを解除しました")
           }, {
             checkStock = true
             toast("エラー: $it")
