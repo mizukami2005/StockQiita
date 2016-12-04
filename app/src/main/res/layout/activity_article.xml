@@ -37,11 +37,16 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.mukesh.MarkdownView
-            android:id="@+id/markdown_view"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="32dp"/>
+            android:layout_height="wrap_content">
+
+            <com.mukesh.MarkdownView
+                android:id="@+id/markdown_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"/>
+        </ScrollView>
 
     </android.support.v4.widget.NestedScrollView>
 
