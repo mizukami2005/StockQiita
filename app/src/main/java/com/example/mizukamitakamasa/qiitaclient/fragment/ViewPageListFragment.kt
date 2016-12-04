@@ -65,7 +65,10 @@ class ViewPageListFragment: Fragment() {
     observable
       .subscribeOn(Schedulers.io())
       .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate { isLoading = true }
+      .doAfterTerminate {
+        isLoading = true
+        progressBar.visibility = View.GONE
+      }
       .bindToLifecycle(MainActivity())
         .subscribe({
           listAdapter.addList(it)
@@ -119,6 +122,7 @@ class ViewPageListFragment: Fragment() {
       override fun onScroll(absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
         if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
           isLoading = false
+          progressBar.visibility = View.VISIBLE
           if (tag == "Recently") {
             count++
             getAddItems(articleClient.recently("$count"))
