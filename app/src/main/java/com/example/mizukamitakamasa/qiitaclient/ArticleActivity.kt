@@ -72,16 +72,15 @@ class ArticleActivity : AppCompatActivity() {
     stockButton.setOnClickListener {
 
       if (token.length != 0 && !checkStock) {
+        val stateList = ColorStateList(
+            arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
+        )
+        stockButton.backgroundTintList = stateList
+        stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
         articleClient.stock("Bearer $token", article.id)
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .doAfterTerminate {
-            val stateList = ColorStateList(
-                arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
-            )
-            stockButton.backgroundTintList = stateList
-            stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
-          }
+          .doAfterTerminate { }
           .bindToLifecycle(MainActivity())
           .subscribe({
             checkStock = true
@@ -91,16 +90,15 @@ class ArticleActivity : AppCompatActivity() {
             toast("ストック出来ませんでした")
           })
       } else if (token.length != 0 && checkStock) {
+        val stateList = ColorStateList(
+            arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
+        )
+        stockButton.backgroundTintList = stateList
+        stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
         articleClient.unStock("Bearer $token", article.id)
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
-          .doAfterTerminate {
-            val stateList = ColorStateList(
-                arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
-            )
-            stockButton.backgroundTintList = stateList
-            stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
-          }
+          .doAfterTerminate { }
           .bindToLifecycle(MainActivity())
           .subscribe({
             checkStock = false
