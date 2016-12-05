@@ -15,6 +15,7 @@ import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
 import com.mukesh.MarkdownView
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import javax.inject.Inject
@@ -61,22 +62,7 @@ class ArticleActivity : AppCompatActivity() {
     val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
     val token = data.getString("token", "")
 
-    articleClient.checkStock("Bearer $token", article.id)
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate { }
-      .bindToLifecycle(MainActivity())
-      .subscribe({
-        val stateList = ColorStateList(
-            arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
-        )
-        stockButton.backgroundTintList = stateList
-        stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
-        checkStock = true
-        toast("stock済み: $it")
-      }, {
-        checkStock = false
-      })
+    processCheck(articleClient.checkStock("Bearer $token", article.id))
 
     stockButton.setOnClickListener {
 
@@ -86,39 +72,59 @@ class ArticleActivity : AppCompatActivity() {
         )
         stockButton.backgroundTintList = stateList
         stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
-        articleClient.stock("Bearer $token", article.id)
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .doAfterTerminate { }
-          .bindToLifecycle(MainActivity())
-          .subscribe({
-            checkStock = true
-            toast("ストックしました")
-          }, {
-            checkStock = false
-            toast("ストック出来ませんでした")
-          })
+        processStock(articleClient.stock("Bearer $token", article.id), true)
       } else if (token.length != 0 && checkStock) {
         val stateList = ColorStateList(
             arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
         )
         stockButton.backgroundTintList = stateList
         stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
-        articleClient.unStock("Bearer $token", article.id)
-          .subscribeOn(Schedulers.io())
-          .observeOn(AndroidSchedulers.mainThread())
-          .doAfterTerminate { }
-          .bindToLifecycle(MainActivity())
-          .subscribe({
-            checkStock = false
-            toast("ストックを解除しました")
-          }, {
-            checkStock = true
-            toast("エラー: $it")
-          })
+        processStock(articleClient.unStock("Bearer $token", article.id), false)
       } else {
         toast("ログインしていません")
       }
     }
+  }
+
+  private fun processCheck(observable: Observable<String>) {
+    observable
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .bindToLifecycle(MainActivity())
+    .subscribe({
+      val stateList = ColorStateList(
+          arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
+      )
+      stockButton.backgroundTintList = stateList
+      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      checkStock = true
+      toast("stock済み: $it")
+    }, {
+      checkStock = false
+    })
+  }
+
+  private fun processStock(observable: Observable<String>, isStock: Boolean) {
+    observable
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .bindToLifecycle(MainActivity())
+    .subscribe({
+      if (isStock) {
+        checkStock = true
+        toast("ストックしました")
+      } else {
+        checkStock = false
+        toast("ストックを解除しました")
+      }
+    }, {
+      if (isStock) {
+        checkStock = false
+        toast("ストック出来ませんでした")
+      } else {
+        checkStock = true
+        toast("エラー: $it")
+      }
+    })
   }
 }
