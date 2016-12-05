@@ -26,6 +26,18 @@ class ArticleActivity : AppCompatActivity() {
 
   var checkStock = false
 
+  val stockButton: FloatingActionButton by lazy {
+    findViewById(R.id.stock_button) as FloatingActionButton
+  }
+
+  val articleView: ArticleView by lazy {
+    findViewById(R.id.article_view) as ArticleView
+  }
+
+  val markdownView: MarkdownView by lazy {
+    findViewById(R.id.markdown_view) as MarkdownView
+  }
+
   companion object {
 
     private const val ARTICLE_EXTRA: String = "article"
@@ -41,9 +53,6 @@ class ArticleActivity : AppCompatActivity() {
     setContentView(R.layout.activity_article)
 
 //    val collapsongToolBarLayout = findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
-    val stockButton = findViewById(R.id.stock_button) as FloatingActionButton
-    val articleView = findViewById(R.id.article_view) as ArticleView
-    val markdownView = findViewById(R.id.markdown_view) as MarkdownView
 
     val article: Article = intent.getParcelableExtra(ARTICLE_EXTRA)
     articleView.setArticle(article)
