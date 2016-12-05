@@ -64,7 +64,6 @@ class ListTagActivity : AppCompatActivity() {
       checkTagList += tag
     }
 
-//    ListView = findViewById(R.id.list_view) as ListView
     getTags(articleClient.tags("$count"))
     listView.adapter = listAdapter
 
@@ -147,12 +146,5 @@ class ListTagActivity : AppCompatActivity() {
     }, {
       Log.e("error", "error: $it")
     })
-  }
-
-  private fun saveTagNameList(context: Context, key: String, values: MutableSet<String>) {
-    val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
-    var editor = prefs.edit()
-    editor.putStringSet(key, values)
-    editor.apply()
   }
 }
