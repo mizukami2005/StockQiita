@@ -310,6 +310,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     if (requestCode == 1001) {
       if (resultCode == Activity.RESULT_OK) {
         init()
+        fabClose()
       }
     }
   }
