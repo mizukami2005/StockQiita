@@ -7,4 +7,9 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="TextAppearance.AppCompat.Title" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/fab_background</item>
+    </style>
 </resources>
