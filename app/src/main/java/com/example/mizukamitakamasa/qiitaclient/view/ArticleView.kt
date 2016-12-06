@@ -49,9 +49,13 @@ class ArticleView : FrameLayout {
 //    }
   }
 
-  fun setArticle(article: Article) {
+  fun setArticle(article: Article, isArticleActivivty: Boolean = false) {
     titleTextView.text = article.title
     userIdTextView.text = article.user.id
+    if (isArticleActivivty) {
+      titleTextView.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
+      userIdTextView.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
+    }
     Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
 //    folderImageView.setImageResource(R.mipmap.ic_folder_white)
 //    folderImageView.setBackgroundColor(Color.argb(255, 89, 187, 12))
