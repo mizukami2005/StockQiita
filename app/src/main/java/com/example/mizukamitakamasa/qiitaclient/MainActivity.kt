@@ -188,6 +188,10 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
         fabClose()
       }
     }
+
+    favBackground.setOnTouchListener { view, motionEvent ->
+      true
+    }
   }
 
   override fun onResume() {
