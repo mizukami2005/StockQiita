@@ -74,12 +74,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   var state = ""
   var clientSecret = ""
 
-//  var queryEditText: EditText by Delegates.notNull()
-//    private set
-
-//  var searchButton: Button by Delegates.notNull()
-//    private set
-
   val favBackground: View by lazy {
     findViewById(R.id.fav_background)
   }
@@ -94,10 +88,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
   val favLoginButton: FloatingActionButton by lazy {
     findViewById(R.id.fav_login) as FloatingActionButton
-  }
-
-  val animatorUtils: AnimatorUtils by lazy {
-    AnimatorUtils()
   }
 
   val fabTagsLayout: LinearLayout by lazy {
@@ -133,13 +123,8 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     setSupportActionBar(mToolBar)
 
     // TabLayoutの設定
-//    val tabLayout: TabLayout = findViewById(R.id.tabs) as TabLayout
     tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-
     init()
-
-//    queryEditText = findViewById(R.id.query_edit_text) as EditText
-//    searchButton = findViewById(R.id.search_button) as Button
 
     try {
         authURL = Config().authUrl()
@@ -199,39 +184,26 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     val intent = intent
     val action = intent.action
-    Log.e("sample", "sample" + Intent.ACTION_VIEW)
-
     val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
     val token = data.getString("token", "")
-    Log.e("onResume", token)
 
     if (Intent.ACTION_VIEW.equals(action) && token.length == 0) {
-      Log.e("intent action", "intent action")
       val uri: Uri? = intent.data
       if (uri != null) {
         val code: String = uri.getQueryParameter("code")
         val state: String = uri.getQueryParameter("state")
         var token: String = ""
-        Log.e("code", code)
-        Log.e("state", state)
-        Log.e("uri", uri.toString())
         if (state.equals("bb17785d811bb1913ef54b0a7657de780defaa2d")) {
-          Log.e("success", "success")
           var map = HashMap<String, String>()
           map.put("client_id", clientID)
           map.put("client_secret", clientSecret)
           map.put("code", code)
-          Log.e("aaaaaaaaaaaaaaa", token)
-
           getToken(qiitaClient.access(map))
         }
       }
-    } else {
-      Log.e("login", "logined")
     }
   }
 
-  //qiita authのurlを作成
   private fun getAuthURL(authURL: String, clientID: String, scope: String, status: String): Uri =
       Uri.parse("$authURL?client_id=$clientID&scope=$scope&state=$status")
 
@@ -316,7 +288,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     viewPager.addOnPageChangeListener(this)
     viewPager.adapter = viewPagerAdapter
-
     tabLayout.setupWithViewPager(viewPager)
   }
 
@@ -365,23 +336,4 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       Log.e("エラー", "エラー" + it)
     })
   }
-
-  // 通信処理
-//  private fun process(observable: Observable<Array<Article>>) {
-//    Log.e("ddddddddddddddd","dddddddddddddddd")
-//    count = 1
-//    progressBar.visibility = View.VISIBLE
-//    observable
-//        .subscribeOn(Schedulers.io())
-//        .observeOn(AndroidSchedulers.mainThread())
-//        .doAfterTerminate { progressBar.visibility = View.GONE }
-//        .bindToLifecycle(this)
-//        .subscribe({
-//          Log.e("regggggggggggggggg", "argsgewsf" + this)
-//          listAdapter.articles = it
-//          listAdapter.notifyDataSetChanged()
-//        }, {
-//          toast("エラー: $it")
-//        })
-//  }
 }
