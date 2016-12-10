@@ -8,40 +8,12 @@
               android:orientation="vertical"
               tools:context="com.example.mizukamitakamasa.qiitaclient.MainActivity">
 
-    <!-- ToolBar -->
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorQiita"
         app:titleTextColor="@color/fab_background"/>
-
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="bottom"-->
-        <!--android:orientation="horizontal">-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/query_edit_text"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"/>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/search_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/colorPrimary"-->
-            <!--android:text="検索"/>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/login_button"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/colorAccent"-->
-            <!--android:text="ログイン"/>-->
-    <!--</LinearLayout>-->
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tabs"
@@ -136,18 +108,6 @@
         android:rotation="45"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimary"/>
-
-    <!--<android.support.design.widget.TabLayout-->
-        <!--android:id="@+id/bottom_tab_layout"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_alignParentBottom="true"/>-->
-    <!--<android.support.v4.view.ViewPager-->
-        <!--android:id="@+id/bottom_view_pager"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_below="@+id/toolbar"-->
-        <!--android:layout_above="@id/bottom_tab_layout"/>-->
 
     <ProgressBar
         android:id="@+id/progress_bar"
