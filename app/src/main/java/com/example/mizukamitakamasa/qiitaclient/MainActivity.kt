@@ -4,6 +4,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,6 +18,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.LayoutInflater
@@ -157,7 +159,17 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
         val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
         startActivity(intent)
       } else {
-        toast("保存済み: $token")
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+        builder.setTitle("ログアウト")
+        builder.setMessage("ログアウトしますか？")
+        builder.setPositiveButton("ログアウト", DialogInterface.OnClickListener { dialogInterface, i ->
+          val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+          val editor = data.edit()
+          editor.putString("token", "")
+          editor.apply()
+        })
+        builder.setNegativeButton("キャンセル", null)
+        builder.create().show()
       }
     }
 
