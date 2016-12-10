@@ -2,6 +2,7 @@ package com.example.mizukamitakamasa.qiitaclient
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
@@ -13,8 +14,10 @@ import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.Toolbar
 import android.util.Log
+import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
+import android.widget.TextView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
@@ -29,6 +32,8 @@ class ArticleActivity : AppCompatActivity() {
 
   @Inject
   lateinit var articleClient: ArticleClient
+
+  lateinit var article: Article
 
   var checkStock = false
 
@@ -56,6 +61,15 @@ class ArticleActivity : AppCompatActivity() {
     findViewById(R.id.toolbar) as Toolbar
   }
 
+  val tooLBarTitle: TextView by lazy {
+    findViewById(R.id.toolbar_text_view) as TextView
+  }
+
+  var isMenu = false
+
+  lateinit var data: SharedPreferences
+  lateinit var token: String
+
   companion object {
 
     private const val ARTICLE_EXTRA: String = "article"
@@ -70,7 +84,7 @@ class ArticleActivity : AppCompatActivity() {
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_article)
 
-    val article: Article = intent.getParcelableExtra(ARTICLE_EXTRA)
+    article = intent.getParcelableExtra(ARTICLE_EXTRA)
     setSupportActionBar(toolBar)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
     articleView.setArticle(article, true)
@@ -78,37 +92,42 @@ class ArticleActivity : AppCompatActivity() {
 
     appBarLayout.addOnOffsetChangedListener { appBarLayout, offset ->
       collapsongToolBarLayout.title = ""
+      tooLBarTitle.text = ""
+      isMenu = false
+      invalidateOptionsMenu()
       if (-offset + toolBar.height == collapsongToolBarLayout.height) {
-        collapsongToolBarLayout.title = article.title
-        collapsongToolBarLayout.setCollapsedTitleTextColor(ContextCompat.getColor(applicationContext, R.color.fab_background))
+        isMenu = true
+        tooLBarTitle.text = article.title
+        invalidateOptionsMenu()
       }
     }
 
-    val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-    val token = data.getString("token", "")
+    data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+    token = data.getString("token", "")
+
+    toolBar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
+      override fun onMenuItemClick(item: MenuItem?): Boolean {
+        changeStockUnstock()
+        return true
+      }
+    })
 
     processCheck(articleClient.checkStock("Bearer $token", article.id))
 
     stockButton.setOnClickListener {
+      changeStockUnstock()
+    }
+  }
 
-      if (token.length != 0 && !checkStock) {
-        val stateList = ColorStateList(
-            arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
-        )
-        stockButton.backgroundTintList = stateList
-        stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
-        processStock(articleClient.stock("Bearer $token", article.id), true)
-      } else if (token.length != 0 && checkStock) {
-        val stateList = ColorStateList(
-            arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
-        )
-        stockButton.backgroundTintList = stateList
-        stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
-        processStock(articleClient.unStock("Bearer $token", article.id), false)
-      } else {
-        toast("ログインしていません")
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    if (isMenu) {
+      menuInflater.inflate(R.menu.menu_main, menu)
+      if (checkStock) {
+        Log.e("check", "check")
+        menu.findItem(R.id.action_stock).setIcon(R.drawable.item_folder_red)
       }
     }
+    return super.onCreateOptionsMenu(menu)
   }
 
   override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -129,6 +148,7 @@ class ArticleActivity : AppCompatActivity() {
       )
       stockButton.backgroundTintList = stateList
       stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+
       checkStock = true
       toast("stock済み: $it")
     }, {
@@ -140,6 +160,7 @@ class ArticleActivity : AppCompatActivity() {
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
+    .doAfterTerminate { invalidateOptionsMenu() }
     .bindToLifecycle(MainActivity())
     .subscribe({
       if (isStock) {
@@ -158,5 +179,25 @@ class ArticleActivity : AppCompatActivity() {
         toast("エラー: $it")
       }
     })
+  }
+
+  private fun changeStockUnstock() {
+    if (token.length != 0 && !checkStock) {
+      val stateList = ColorStateList(
+          arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
+      )
+      stockButton.backgroundTintList = stateList
+      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      processStock(articleClient.stock("Bearer $token", article.id), true)
+    } else if (token.length != 0 && checkStock) {
+      val stateList = ColorStateList(
+          arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
+      )
+      stockButton.backgroundTintList = stateList
+      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
+      processStock(articleClient.unStock("Bearer $token", article.id), false)
+    } else {
+      toast("ログインしていません")
+    }
   }
 }
