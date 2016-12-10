@@ -8,26 +8,38 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="200dp">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:contentScrim="#999999"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:background="@color/colorQiita"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
 
             <com.example.mizukamitakamasa.qiitaclient.view.ArticleView
             android:id="@+id/article_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
 
-            <!--<android.support.v7.widget.Toolbar-->
-                <!--android:id="@+id/toolbar"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="?attr/actionBarSize"-->
-                <!--app:layout_collapseMode="pin"-->
-                <!--android:titleTextAppearance="@style/TextAppearance.AppCompat.Small" />-->
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:layout_collapseMode="pin">
+
+                <TextView
+                    android:id="@+id/toolbar_text_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/fab_background"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="title display"/>
+
+            </android.support.v7.widget.Toolbar>
 
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
@@ -37,11 +49,16 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.mukesh.MarkdownView
-            android:id="@+id/markdown_view"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="32dp"/>
+            android:layout_height="wrap_content">
+
+            <com.mukesh.MarkdownView
+                android:id="@+id/markdown_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="32dp"/>
+        </ScrollView>
 
     </android.support.v4.widget.NestedScrollView>
 

@@ -14,7 +14,6 @@ import java.util.*
 
 class ArticleListAdapter(private val context: Context) : BaseAdapter() {
 
-  //    var articles: MutableList<Article> = mutableListOf()
   internal var articles = emptyArray<Article>()
 
   override fun getCount(): Int = articles.size

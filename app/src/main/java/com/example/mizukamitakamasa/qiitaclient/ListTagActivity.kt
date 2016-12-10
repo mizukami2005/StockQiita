@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.util.Log
 import android.view.KeyEvent
+import android.widget.AbsListView
 import android.widget.CheckBox
 import android.widget.ListView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
@@ -20,6 +21,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
+import kotlin.properties.Delegates
 
 class ListTagActivity : AppCompatActivity() {
 
@@ -30,11 +32,16 @@ class ListTagActivity : AppCompatActivity() {
     ArticleTagListAdapter(applicationContext)
   }
 
+  val listView: ListView by lazy {
+    findViewById(R.id.list_view) as ListView
+  }
+
   val homeButton: FloatingActionButton by lazy {
     findViewById(R.id.home_button) as FloatingActionButton
   }
 
   var count = 1
+  var isLoading = true
 
   val checkTagList: MutableSet<String> = mutableSetOf()
 
@@ -57,7 +64,6 @@ class ListTagActivity : AppCompatActivity() {
       checkTagList += tag
     }
 
-    val listView: ListView = findViewById(R.id.list_view) as ListView
     getTags(articleClient.tags("$count"))
     listView.adapter = listAdapter
 
@@ -84,6 +90,20 @@ class ListTagActivity : AppCompatActivity() {
       setResult(Activity.RESULT_OK, intent)
       finish()
     }
+
+    listView.setOnScrollListener(object : AbsListView.OnScrollListener {
+      override fun onScroll(absListView: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
+        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
+          isLoading = false
+          count++
+          getAddTagItems(articleClient.tags("$count"))
+        }
+      }
+
+      override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
+
+      }
+    })
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
@@ -99,21 +119,32 @@ class ListTagActivity : AppCompatActivity() {
 
   private fun getTags(observable: Observable<Array<ArticleTag>>) {
     observable
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate { }
-      .subscribe({
-        listAdapter.addList(it)
-        listAdapter.notifyDataSetChanged()
-      }, {
-        Log.e("error", "error: $it")
-      })
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .doAfterTerminate { }
+    .subscribe({
+      listAdapter.articleTags = it
+      listAdapter.notifyDataSetChanged()
+    }, {
+      Log.e("error", "error: $it")
+    })
   }
 
-  private fun saveTagNameList(context: Context, key: String, values: MutableSet<String>) {
-    val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
-    var editor = prefs.edit()
-    editor.putStringSet(key, values)
-    editor.apply()
+  private fun getAddTagItems(observable: Observable<Array<ArticleTag>>) {
+    observable
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .doAfterTerminate {
+      isLoading = true
+    }
+    .subscribe({
+      listAdapter.addList(it)
+      listAdapter.notifyDataSetChanged()
+      var position = listView.firstVisiblePosition
+      var yOffset = listView.getChildAt(0).top
+      listView.setSelectionFromTop(position, yOffset)
+    }, {
+      Log.e("error", "error: $it")
+    })
   }
 }
