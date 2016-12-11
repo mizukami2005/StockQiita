@@ -166,6 +166,8 @@ class ArticleActivity : AppCompatActivity() {
       if (isStock) {
         checkStock = true
         toast("ストックしました")
+        val vib = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        vib.vibrate(100)
       } else {
         checkStock = false
         toast("ストックを解除しました")
