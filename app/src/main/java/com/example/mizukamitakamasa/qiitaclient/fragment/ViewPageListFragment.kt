@@ -45,45 +45,43 @@ class ViewPageListFragment: Fragment() {
 
   private fun getItems(observable: Observable<Array<Article>>) {
     observable
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate {
-        isLoading = true
-        progressBar.visibility = View.GONE
-      }
-      .bindToLifecycle(MainActivity())
-      .subscribe({
-        listAdapter.articles = it
-        listAdapter.notifyDataSetChanged()
-      }, {
-        Log.e("error", "error: $it")
-      })
-    Log.e("getItems", "getItems")
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .doAfterTerminate {
+      isLoading = true
+      progressBar.visibility = View.GONE
+    }
+    .bindToLifecycle(MainActivity())
+    .subscribe({
+      listAdapter.articles = it
+      listAdapter.notifyDataSetChanged()
+    }, {
+      context.toast(getString(R.string.error_message))
+    })
   }
 
   private fun getAddItems(observable: Observable<Array<Article>>) {
     observable
-      .subscribeOn(Schedulers.io())
-      .observeOn(AndroidSchedulers.mainThread())
-      .doAfterTerminate {
-        isLoading = true
-        progressBar.visibility = View.GONE
-      }
-      .bindToLifecycle(MainActivity())
-        .subscribe({
-          listAdapter.addList(it)
-          listAdapter.notifyDataSetChanged()
-          var position = listView.firstVisiblePosition
-          var yOffset = listView.getChildAt(0).top
-          listView.setSelectionFromTop(position, yOffset)
-        }, {
-          Log.e("error", "error: $it")
-        })
+    .subscribeOn(Schedulers.io())
+    .observeOn(AndroidSchedulers.mainThread())
+    .doAfterTerminate {
+      isLoading = true
+      progressBar.visibility = View.GONE
+    }
+    .bindToLifecycle(MainActivity())
+    .subscribe({
+      listAdapter.addList(it)
+      listAdapter.notifyDataSetChanged()
+      var position = listView.firstVisiblePosition
+      var yOffset = listView.getChildAt(0).top
+      listView.setSelectionFromTop(position, yOffset)
+    }, {
+      context.toast(getString(R.string.error_message))
+    })
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     (context.applicationContext as QiitaClientApp).component.inject(this)
-    Log.e("onCreateView", "onCreateView")
 
     listView = inflater.inflate(R.layout.fragment_view_page_list, container, false) as ListView
     init()
@@ -93,7 +91,6 @@ class ViewPageListFragment: Fragment() {
 
   companion object {
     fun newInstance(tag: String): ViewPageListFragment {
-      Log.e("newInstance", "newInstance")
       val args = Bundle()
       args.putString("tag", tag)
       val fragment = ViewPageListFragment()
@@ -105,11 +102,9 @@ class ViewPageListFragment: Fragment() {
   fun init() {
     var tag = arguments.getString("tag", "Ruby")
     if (tag == "Recently") {
-      Log.e("Recently", "Recently")
       progressBar.visibility = View.VISIBLE
       getItems(articleClient.recently("$count"))
     } else {
-      Log.e("else", "else")
       getItems(articleClient.tagItems(tag, "$count"))
     }
 
