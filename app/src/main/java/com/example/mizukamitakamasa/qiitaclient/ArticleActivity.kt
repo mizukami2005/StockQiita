@@ -7,6 +7,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Vibrator
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
 import android.support.design.widget.FloatingActionButton
@@ -70,6 +71,9 @@ class ArticleActivity : AppCompatActivity() {
   lateinit var data: SharedPreferences
   lateinit var token: String
 
+  val TOKEN_PREFERENCES_NAME = "DataToken"
+  val TOKEN = "token"
+
   companion object {
 
     private const val ARTICLE_EXTRA: String = "article"
@@ -102,8 +106,8 @@ class ArticleActivity : AppCompatActivity() {
       }
     }
 
-    data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-    token = data.getString("token", "")
+    data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    token = data.getString(TOKEN, "")
 
     toolBar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
       override fun onMenuItemClick(item: MenuItem?): Boolean {
@@ -123,7 +127,6 @@ class ArticleActivity : AppCompatActivity() {
     if (isMenu) {
       menuInflater.inflate(R.menu.menu_main, menu)
       if (checkStock) {
-        Log.e("check", "check")
         menu.findItem(R.id.action_stock).setIcon(R.drawable.item_folder_red)
       }
     }
@@ -148,9 +151,7 @@ class ArticleActivity : AppCompatActivity() {
       )
       stockButton.backgroundTintList = stateList
       stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
-
       checkStock = true
-      toast("stock済み: $it")
     }, {
       checkStock = false
     })
@@ -165,20 +166,16 @@ class ArticleActivity : AppCompatActivity() {
     .subscribe({
       if (isStock) {
         checkStock = true
-        toast("ストックしました")
         val vib = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         vib.vibrate(100)
       } else {
         checkStock = false
-        toast("ストックを解除しました")
       }
     }, {
       if (isStock) {
         checkStock = false
-        toast("ストック出来ませんでした")
       } else {
         checkStock = true
-        toast("エラー: $it")
       }
     })
   }
@@ -199,7 +196,7 @@ class ArticleActivity : AppCompatActivity() {
       stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
       processStock(articleClient.unStock("Bearer $token", article.id), false)
     } else {
-      toast("ログインしていません")
+      toast(getString(R.string.not_login_message))
     }
   }
 }
