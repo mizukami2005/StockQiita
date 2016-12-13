@@ -10,6 +10,7 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
+        android:title="@string/app_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorQiita"
@@ -51,18 +52,18 @@
             android:layout_width="wrap_content"
             android:layout_height="56dp"
             android:layout_gravity="center"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="8dp"
-            android:text="ログイン"
-            android:textSize="20dp"/>
+            android:layout_marginTop="@dimen/margin_small"
+            android:layout_marginRight="@dimen/margin_small"
+            android:text="@string/login"
+            android:textSize="@dimen/font_normal"/>
 
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fav_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
             android:src="@drawable/ic_account_circle_white"/>
 
     </LinearLayout>
@@ -83,16 +84,16 @@
             android:layout_gravity="center"
             android:layout_marginTop="8dp"
             android:layout_marginRight="8dp"
-            android:text="タグ一覧"
-            android:textSize="20dp"/>
+            android:text="@string/tag_tool_bar_title"
+            android:textSize="@dimen/font_normal"/>
 
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fav_tags_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:layout_marginRight="16dp"
+            android:layout_marginBottom="@dimen/margin_normal"
+            android:layout_marginRight="@dimen/margin_normal"
             android:src="@drawable/ic_local_offer_white"/>
 
     </LinearLayout>
@@ -103,8 +104,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginBottom="@dimen/margin_normal"
+        android:layout_marginRight="@dimen/margin_normal"
         android:rotation="45"
         android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimary"/>
