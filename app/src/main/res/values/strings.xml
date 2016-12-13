@@ -1,4 +1,33 @@
 <resources>
-    <string name="app_name">QiitaClient</string>
+    <string name="app_name">StockQiita</string>
     <string name="menu_search">検索</string>
+
+    <!--ViewArticle-->
+    <string name="article_title">記事タイトル</string>
+    <string name="article_user_name">ユーザー名</string>
+
+    <!--ViewArticleTag-->
+    <string name="article_tag_name">タグ名</string>
+    <string name="count">1</string>
+
+    <!--FloatingActionButton-->
+    <string name="login">ログイン</string>
+
+    <!--AlertDialog-->
+    <string name="alert_dialog_title">ログアウト</string>
+    <string name="alert_dialog_message">ログアウトしますか？</string>
+    <string name="positive_button_text">ログアウト</string>
+    <string name="negative_button_text">キャンセル</string>
+
+    <!--ErrorMessage-->
+    <string name="error_message">しばらくたってからもう一度お試し下さい</string>
+
+    <!--StockButtonMessage-->
+    <string name="not_login_message">ログインしてください</string>
+    
+    <!--LoginMessage-->
+    <string name="success_login_message">ログインに成功しました</string>
+
+    <!--TagListToolBar-->
+    <string name="tag_tool_bar_title">タグ一覧</string>
 </resources>
