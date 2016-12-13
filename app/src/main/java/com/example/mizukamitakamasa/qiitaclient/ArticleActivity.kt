@@ -8,22 +8,14 @@ import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Vibrator
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CollapsingToolbarLayout
-import android.support.design.widget.FloatingActionButton
-import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.Toolbar
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.webkit.WebView
-import android.widget.TextView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
-import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
-import com.mukesh.MarkdownView
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import kotlinx.android.synthetic.main.activity_article.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -37,34 +29,6 @@ class ArticleActivity : AppCompatActivity() {
   lateinit var article: Article
 
   var checkStock = false
-
-  val stockButton: FloatingActionButton by lazy {
-    findViewById(R.id.stock_button) as FloatingActionButton
-  }
-
-  val articleView: ArticleView by lazy {
-    findViewById(R.id.article_view) as ArticleView
-  }
-
-  val markdownView: MarkdownView by lazy {
-    findViewById(R.id.markdown_view) as MarkdownView
-  }
-
-  val appBarLayout: AppBarLayout by lazy {
-    findViewById(R.id.app_bar) as AppBarLayout
-  }
-
-  val collapsongToolBarLayout: CollapsingToolbarLayout by lazy {
-    findViewById(R.id.collapsing_toolbar) as CollapsingToolbarLayout
-  }
-
-  val toolBar: Toolbar by lazy {
-    findViewById(R.id.toolbar) as Toolbar
-  }
-
-  val tooLBarTitle: TextView by lazy {
-    findViewById(R.id.toolbar_text_view) as TextView
-  }
 
   var isMenu = false
 
@@ -89,19 +53,19 @@ class ArticleActivity : AppCompatActivity() {
     setContentView(R.layout.activity_article)
 
     article = intent.getParcelableExtra(ARTICLE_EXTRA)
-    setSupportActionBar(toolBar)
+    setSupportActionBar(toolbar)
     supportActionBar?.setDisplayHomeAsUpEnabled(true)
-    articleView.setArticle(article, true)
-    markdownView.setMarkDownText(article.body)
+    article_view.setArticle(article, true)
+    markdown_view.setMarkDownText(article.body)
 
-    appBarLayout.addOnOffsetChangedListener { appBarLayout, offset ->
-      collapsongToolBarLayout.title = ""
-      tooLBarTitle.text = ""
+    app_bar.addOnOffsetChangedListener { appBarLayout, offset ->
+      collapsing_toolbar.title = ""
+      toolbar_text_view.text = ""
       isMenu = false
       invalidateOptionsMenu()
-      if (-offset + toolBar.height == collapsongToolBarLayout.height) {
+      if (-offset + toolbar.height == collapsing_toolbar.height) {
         isMenu = true
-        tooLBarTitle.text = article.title
+        toolbar_text_view.text = article.title
         invalidateOptionsMenu()
       }
     }
@@ -109,7 +73,7 @@ class ArticleActivity : AppCompatActivity() {
     data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
     token = data.getString(TOKEN, "")
 
-    toolBar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
+    toolbar.setOnMenuItemClickListener(object: Toolbar.OnMenuItemClickListener {
       override fun onMenuItemClick(item: MenuItem?): Boolean {
         changeStockUnstock()
         return true
@@ -118,7 +82,7 @@ class ArticleActivity : AppCompatActivity() {
 
     processCheck(articleClient.checkStock("Bearer $token", article.id))
 
-    stockButton.setOnClickListener {
+    stock_button.setOnClickListener {
       changeStockUnstock()
     }
   }
@@ -149,8 +113,8 @@ class ArticleActivity : AppCompatActivity() {
       val stateList = ColorStateList(
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
       )
-      stockButton.backgroundTintList = stateList
-      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      stock_button.backgroundTintList = stateList
+      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
       checkStock = true
     }, {
       checkStock = false
@@ -185,15 +149,15 @@ class ArticleActivity : AppCompatActivity() {
       val stateList = ColorStateList(
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
       )
-      stockButton.backgroundTintList = stateList
-      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      stock_button.backgroundTintList = stateList
+      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
       processStock(articleClient.stock("Bearer $token", article.id), true)
     } else if (token.length != 0 && checkStock) {
       val stateList = ColorStateList(
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
       )
-      stockButton.backgroundTintList = stateList
-      stockButton.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
+      stock_button.backgroundTintList = stateList
+      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
       processStock(articleClient.unStock("Bearer $token", article.id), false)
     } else {
       toast(getString(R.string.not_login_message))
