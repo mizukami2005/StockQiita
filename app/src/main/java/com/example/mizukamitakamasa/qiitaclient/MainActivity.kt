@@ -50,17 +50,6 @@ import javax.inject.Inject
 import kotlin.properties.Delegates
 
 class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
-  override fun onPageScrollStateChanged(state: Int) {
-    Log.e("PageScrollStateChanged", "PageScrollStateChanged")
-  }
-
-  override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    Log.e("onPageScrolled", "onPageScrolled")
-  }
-
-  override fun onPageSelected(position: Int) {
-    Log.e("onPageSelected", "onPageSelected")
-  }
 
   @Inject
   lateinit var articleClient: ArticleClient
@@ -112,6 +101,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
   var buttonState: ButtonState = ButtonState.CLOSE
 
+  val TOKEN_PREFERENCES_NAME = "DataToken"
+  val TOKEN = "token"
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (application as QiitaClientApp).component.inject(this)
@@ -119,7 +111,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     // ToolBarの設定
     val mToolBar: Toolbar = findViewById(R.id.toolbar) as Toolbar
-    mToolBar.title = "QiitaClient"
     setSupportActionBar(mToolBar)
 
     // TabLayoutの設定
@@ -138,28 +129,28 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     favLoginButton.setOnClickListener {
-      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-      val token = data.getString("token", "")
+      val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+      val token = data.getString(TOKEN, "")
       if (token.length == 0) {
         val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
         startActivity(intent)
       } else {
         val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-        builder.setTitle("ログアウト")
-        builder.setMessage("ログアウトしますか？")
-        builder.setPositiveButton("ログアウト", DialogInterface.OnClickListener { dialogInterface, i ->
-          val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+        builder.setTitle(getString(R.string.alert_dialog_title))
+        builder.setMessage(getString(R.string.alert_dialog_message))
+        builder.setPositiveButton(getString(R.string.positive_button_text), DialogInterface.OnClickListener { dialogInterface, i ->
+          val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
           val editor = data.edit()
-          editor.putString("token", "")
+          editor.putString(TOKEN, "")
           editor.apply()
         })
-        builder.setNegativeButton("キャンセル", null)
+        builder.setNegativeButton(getString(R.string.negative_button_text), null)
         builder.create().show()
       }
     }
 
     fabTagsButton.setOnClickListener {
-      val tags = arrayListOf("Ruby", "Rails")
+      val tags = arrayListOf("")
       val requestCode = 1001
       ListTagActivity.intent(applicationContext, tags).let { startActivityForResult(it, requestCode) }
     }
@@ -184,8 +175,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     val intent = intent
     val action = intent.action
-    val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-    val token = data.getString("token", "")
+    Log.e("action", action)
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val token = data.getString(TOKEN, "")
 
     if (Intent.ACTION_VIEW.equals(action) && token.length == 0) {
       val uri: Uri? = intent.data
@@ -202,6 +194,15 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
         }
       }
     }
+  }
+
+  override fun onPageScrollStateChanged(state: Int) {
+  }
+
+  override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+  }
+
+  override fun onPageSelected(position: Int) {
   }
 
   private fun getAuthURL(authURL: String, clientID: String, scope: String, status: String): Uri =
@@ -260,11 +261,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     favBackground.visibility = View.GONE
   }
 
-  private fun loadTagList(context: Context, key: String): MutableSet<String> {
-    val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
-    return prefs.getStringSet(key, mutableSetOf())
-  }
-
   private fun init() {
     val tagLists = TagUtils().loadName(applicationContext, "TAG")
     val tags: MutableList<String> = mutableListOf("Recently")
@@ -304,23 +300,21 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
   private fun getToken(observable: Observable<ResponseToken>) {
     var token: String = ""
-    val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
     val editor = data.edit()
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .doAfterTerminate {
-      getQiitaUser(qiitaClient.getUser("Bearer $token"))
+      if (token.length != 0) {
+        getQiitaUser(qiitaClient.getUser("Bearer $token"))
+      }
     }
     .bindToLifecycle(this)
     .subscribe({
       token = it.token
-      editor.putString("token", token)
+      editor.putString(TOKEN, token)
       editor.apply()
-      toast("Finish: $it")
-    }, {
-      Log.e("エラー", "エラー" + it)
-      toast("エラー: $it")
     })
   }
 
@@ -331,9 +325,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     .doAfterTerminate {  }
     .bindToLifecycle(this)
     .subscribe({
-      toast("ログインしました")
+      toast(applicationContext.getString(R.string.success_login_message))
     }, {
-      Log.e("エラー", "エラー" + it)
+      toast(applicationContext.getString(R.string.error_message))
     })
   }
 }
