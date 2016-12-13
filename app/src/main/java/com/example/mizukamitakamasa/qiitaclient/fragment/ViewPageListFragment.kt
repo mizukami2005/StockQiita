@@ -2,22 +2,19 @@ package com.example.mizukamitakamasa.qiitaclient.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ListView
-import android.widget.ProgressBar
 import com.example.mizukamitakamasa.qiitaclient.*
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
-import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import kotlinx.android.synthetic.main.activity_main.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.util.zip.Inflater
 import javax.inject.Inject
 import kotlin.properties.Delegates
 
@@ -36,10 +33,6 @@ class ViewPageListFragment: Fragment() {
   var listView: ListView by Delegates.notNull()
     private set
 
-  val progressBar: ProgressBar by lazy {
-    activity.findViewById(R.id.progress_bar) as ProgressBar
-  }
-
   var count = 1
   var isLoading = true
 
@@ -49,7 +42,7 @@ class ViewPageListFragment: Fragment() {
     .observeOn(AndroidSchedulers.mainThread())
     .doAfterTerminate {
       isLoading = true
-      progressBar.visibility = View.GONE
+      activity.progress_bar.visibility = View.GONE
     }
     .bindToLifecycle(MainActivity())
     .subscribe({
@@ -66,7 +59,7 @@ class ViewPageListFragment: Fragment() {
     .observeOn(AndroidSchedulers.mainThread())
     .doAfterTerminate {
       isLoading = true
-      progressBar.visibility = View.GONE
+      activity.progress_bar.visibility = View.GONE
     }
     .bindToLifecycle(MainActivity())
     .subscribe({
@@ -102,7 +95,7 @@ class ViewPageListFragment: Fragment() {
   fun init() {
     var tag = arguments.getString("tag", "Ruby")
     if (tag == "Recently") {
-      progressBar.visibility = View.VISIBLE
+      activity.progress_bar.visibility = View.VISIBLE
       getItems(articleClient.recently("$count"))
     } else {
       getItems(articleClient.tagItems(tag, "$count"))
@@ -117,7 +110,7 @@ class ViewPageListFragment: Fragment() {
       override fun onScroll(absListView: AbsListView, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
         if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
           isLoading = false
-          progressBar.visibility = View.VISIBLE
+          activity.progress_bar.visibility = View.VISIBLE
           if (tag == "Recently") {
             count++
             getAddItems(articleClient.recently("$count"))
