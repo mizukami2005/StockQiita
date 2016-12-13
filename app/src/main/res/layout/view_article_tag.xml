@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
-    android:padding="@dimen/activity_vertical_margin"
+    android:padding="@dimen/margin_normal"
     tools:context="com.example.mizukamitakamasa.qiitaclient.ListTagActivity">
 
     <ImageView
@@ -15,19 +15,19 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerVertical="true"
-        tools:background="#f00"/>
+        tools:background="@color/colorQiita"/>
 
     <TextView
         android:id="@+id/tag_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/activity_vertical_margin"
+        android:layout_marginStart="@dimen/margin_normal"
         android:layout_toEndOf="@+id/tag_image_view"
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@android:color/black"
-        android:textSize="18sp"
-        tools:text="記事のタグ名"/>
+        android:textSize="@dimen/font_small"
+        tools:text="@string/article_tag_name"/>
 
     <TextView
         android:id="@+id/followers_count_text_view"
@@ -35,10 +35,10 @@
         android:layout_height="wrap_content"
         android:layout_alignStart="@+id/tag_name_text_view"
         android:layout_below="@+id/tag_name_text_view"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="@dimen/margin_small"
         android:textColor="@android:color/black"
-        android:textSize="14sp"
-        tools:text="1"/>
+        android:textSize="@dimen/font_user_name"
+        tools:text="@string/count"/>
 
     <CheckBox
         android:id="@+id/tag_check_box"
