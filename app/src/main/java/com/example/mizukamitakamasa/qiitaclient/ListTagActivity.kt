@@ -69,9 +69,7 @@ class ListTagActivity : AppCompatActivity() {
 
     listView.setOnItemClickListener { adapterView, view, position, id ->
       val articleTag = listAdapter.articleTags[position]
-      val item = listView.getItemAtPosition(position)
       val checkBox = view.findViewById(R.id.tag_check_box) as CheckBox
-      Log.e("checkbox", "checlbox: $checkBox")
       if (checkBox.isChecked) {
         checkBox.isChecked = false
         checkTagList -= articleTag.id
@@ -79,9 +77,6 @@ class ListTagActivity : AppCompatActivity() {
         checkBox.isChecked = true
         checkTagList += articleTag.id
       }
-      Log.e("item", "$item")
-      Log.e("TAG", articleTag.id)
-      Log.e("checkTagList", checkTagList.toString())
       TagUtils().saveName(applicationContext, "TAG", checkTagList)
     }
 
@@ -93,7 +88,7 @@ class ListTagActivity : AppCompatActivity() {
 
     listView.setOnScrollListener(object : AbsListView.OnScrollListener {
       override fun onScroll(absListView: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
+        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading && count <= 4) {
           isLoading = false
           count++
           getAddTagItems(articleClient.tags("$count"))
@@ -101,14 +96,12 @@ class ListTagActivity : AppCompatActivity() {
       }
 
       override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
-
       }
     })
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
     if (keyCode == KeyEvent.KEYCODE_BACK) {
-      Log.e("back", "back")
       val intent = intent
       setResult(Activity.RESULT_OK, intent)
       finish()
@@ -121,12 +114,11 @@ class ListTagActivity : AppCompatActivity() {
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .doAfterTerminate { }
     .subscribe({
       listAdapter.articleTags = it
       listAdapter.notifyDataSetChanged()
     }, {
-      Log.e("error", "error: $it")
+      toast(getString(R.string.error_message))
     })
   }
 
@@ -144,7 +136,7 @@ class ListTagActivity : AppCompatActivity() {
       var yOffset = listView.getChildAt(0).top
       listView.setSelectionFromTop(position, yOffset)
     }, {
-      Log.e("error", "error: $it")
+      toast(getString(R.string.error_message))
     })
   }
 }
