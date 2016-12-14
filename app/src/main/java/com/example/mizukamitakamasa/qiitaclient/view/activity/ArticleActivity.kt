@@ -1,4 +1,4 @@
-package com.example.mizukamitakamasa.qiitaclient
+package com.example.mizukamitakamasa.qiitaclient.view.activity
 
 import android.content.Context
 import android.content.Intent
@@ -12,8 +12,12 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import com.example.mizukamitakamasa.qiitaclient.MainActivity
+import com.example.mizukamitakamasa.qiitaclient.QiitaClientApp
+import com.example.mizukamitakamasa.qiitaclient.R
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
+import com.example.mizukamitakamasa.qiitaclient.toast
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_article.*
 import rx.Observable

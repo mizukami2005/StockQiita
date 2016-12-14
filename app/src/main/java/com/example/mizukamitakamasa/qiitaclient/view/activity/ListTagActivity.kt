@@ -1,4 +1,4 @@
-package com.example.mizukamitakamasa.qiitaclient
+package com.example.mizukamitakamasa.qiitaclient.view.activity
 
 import android.app.Activity
 import android.content.Context
@@ -7,11 +7,16 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
 import android.widget.AbsListView
+import com.example.mizukamitakamasa.qiitaclient.QiitaClientApp
+import com.example.mizukamitakamasa.qiitaclient.R
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.ArticleTag
+import com.example.mizukamitakamasa.qiitaclient.toast
 import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
+import com.example.mizukamitakamasa.qiitaclient.view.adapter.ArticleTagListAdapter
 import kotlinx.android.synthetic.main.activity_list_tag.*
 import kotlinx.android.synthetic.main.view_article_tag.*
+import kotlinx.android.synthetic.main.view_article_tag.view.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
@@ -38,7 +43,7 @@ class ListTagActivity : AppCompatActivity() {
 
     fun intent(context: Context, tags: ArrayList<String>): Intent =
         Intent(context, ListTagActivity::class.java)
-          .putStringArrayListExtra("$TAG_EXTRA", tags)
+          .putStringArrayListExtra("${TAG_EXTRA}", tags)
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,11 +61,11 @@ class ListTagActivity : AppCompatActivity() {
 
     list_view.setOnItemClickListener { adapterView, view, position, id ->
       val articleTag = listAdapter.articleTags[position]
-      if (tag_check_box.isChecked) {
-        tag_check_box.isChecked = false
+      if (view.tag_check_box.isChecked) {
+        view.tag_check_box.isChecked = false
         checkTagList -= articleTag.id
       } else {
-        tag_check_box.isChecked = true
+        view.tag_check_box.isChecked = true
         checkTagList += articleTag.id
       }
       TagUtils().saveName(applicationContext, "TAG", checkTagList)
