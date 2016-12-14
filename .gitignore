@@ -5,6 +5,7 @@
 #/.idea/workspace.xml
 #/.idea/libraries
 .DS_Store
+/app/src/main/java/com/example/mizukamitakamasa/qiitaclient/util/Config.kt
 /build
 /captures
 .externalNativeBuild
