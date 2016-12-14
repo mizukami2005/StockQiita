@@ -1,7 +1,7 @@
 package com.example.mizukamitakamasa.qiitaclient.dagger
 
-import com.example.mizukamitakamasa.qiitaclient.ArticleActivity
-import com.example.mizukamitakamasa.qiitaclient.ListTagActivity
+import com.example.mizukamitakamasa.qiitaclient.view.activity.ArticleActivity
+import com.example.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity
 import com.example.mizukamitakamasa.qiitaclient.MainActivity
 import com.example.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
 import dagger.Component

@@ -21,6 +21,7 @@ import com.example.mizukamitakamasa.qiitaclient.model.User
 import com.example.mizukamitakamasa.qiitaclient.util.PxDpUtil
 import com.example.mizukamitakamasa.qiitaclient.util.Config
 import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
+import com.example.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*

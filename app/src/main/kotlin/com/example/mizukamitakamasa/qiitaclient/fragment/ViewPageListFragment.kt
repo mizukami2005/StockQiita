@@ -10,6 +10,8 @@ import android.widget.ListView
 import com.example.mizukamitakamasa.qiitaclient.*
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.Article
+import com.example.mizukamitakamasa.qiitaclient.view.activity.ArticleActivity
+import com.example.mizukamitakamasa.qiitaclient.view.adapter.ArticleListAdapter
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
 import kotlinx.android.synthetic.main.activity_main.*
 import rx.Observable

@@ -1,4 +1,4 @@
-package com.example.mizukamitakamasa.qiitaclient
+package com.example.mizukamitakamasa.qiitaclient.view.adapter
 
 import android.content.Context
 import android.view.View
