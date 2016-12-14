@@ -30,7 +30,6 @@ data class User(val id: String,
       writeString(name)
       writeString(profileImageUrl)
     }
-
   }
 }
 

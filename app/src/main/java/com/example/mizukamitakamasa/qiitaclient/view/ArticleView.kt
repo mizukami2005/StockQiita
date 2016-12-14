@@ -1,19 +1,14 @@
 package com.example.mizukamitakamasa.qiitaclient.view
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.widget.FrameLayout
-import android.widget.ImageButton
-import android.widget.ImageView
-import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.example.mizukamitakamasa.qiitaclient.R
-import com.example.mizukamitakamasa.qiitaclient.bindView
 import com.example.mizukamitakamasa.qiitaclient.model.Article
+import kotlinx.android.synthetic.main.view_article.view.*
 
 /**
  * Created by mizukamitakamasa on 2016/09/25.
@@ -35,23 +30,17 @@ class ArticleView : FrameLayout {
               defStyleAttr: Int,
               defStyleRes: Int) : super(context, attrs, defStyleAttr, defStyleRes)
 
-  val profileImageView: ImageView by bindView(R.id.profile_image_view)
-
-  val titleTextView: TextView by bindView(R.id.title_text_view)
-
-  val userIdTextView: TextView by bindView(R.id.user_id_text_view)
-
   init {
     LayoutInflater.from(context).inflate(R.layout.view_article, this)
   }
 
   fun setArticle(article: Article, isArticleActivivty: Boolean = false) {
-    titleTextView.text = article.title
-    userIdTextView.text = article.user.id
+    title_text_view.text = article.title
+    user_id_text_view.text = article.user.id
     if (isArticleActivivty) {
-      titleTextView.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
-      userIdTextView.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
+      title_text_view.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
+      user_id_text_view.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
     }
-    Glide.with(context).load(article.user.profileImageUrl).into(profileImageView)
+    Glide.with(context).load(article.user.profileImageUrl).into(profile_image_view)
   }
 }

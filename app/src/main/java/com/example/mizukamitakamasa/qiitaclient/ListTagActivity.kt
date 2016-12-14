@@ -5,23 +5,18 @@ import android.content.Context
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.util.Log
 import android.view.KeyEvent
 import android.widget.AbsListView
-import android.widget.CheckBox
-import android.widget.ListView
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.model.ArticleTag
 import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
-import com.trello.rxlifecycle.kotlin.bindToLifecycle
-import org.json.JSONArray
+import kotlinx.android.synthetic.main.activity_list_tag.*
+import kotlinx.android.synthetic.main.view_article_tag.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 class ListTagActivity : AppCompatActivity() {
 
@@ -30,14 +25,6 @@ class ListTagActivity : AppCompatActivity() {
 
   val listAdapter: ArticleTagListAdapter by lazy {
     ArticleTagListAdapter(applicationContext)
-  }
-
-  val listView: ListView by lazy {
-    findViewById(R.id.list_view) as ListView
-  }
-
-  val homeButton: FloatingActionButton by lazy {
-    findViewById(R.id.home_button) as FloatingActionButton
   }
 
   var count = 1
@@ -65,35 +52,29 @@ class ListTagActivity : AppCompatActivity() {
     }
 
     getTags(articleClient.tags("$count"))
-    listView.adapter = listAdapter
+    list_view.adapter = listAdapter
 
-    listView.setOnItemClickListener { adapterView, view, position, id ->
+    list_view.setOnItemClickListener { adapterView, view, position, id ->
       val articleTag = listAdapter.articleTags[position]
-      val item = listView.getItemAtPosition(position)
-      val checkBox = view.findViewById(R.id.tag_check_box) as CheckBox
-      Log.e("checkbox", "checlbox: $checkBox")
-      if (checkBox.isChecked) {
-        checkBox.isChecked = false
+      if (tag_check_box.isChecked) {
+        tag_check_box.isChecked = false
         checkTagList -= articleTag.id
       } else {
-        checkBox.isChecked = true
+        tag_check_box.isChecked = true
         checkTagList += articleTag.id
       }
-      Log.e("item", "$item")
-      Log.e("TAG", articleTag.id)
-      Log.e("checkTagList", checkTagList.toString())
       TagUtils().saveName(applicationContext, "TAG", checkTagList)
     }
 
-    homeButton.setOnClickListener {
+    home_button.setOnClickListener {
       val intent = intent
       setResult(Activity.RESULT_OK, intent)
       finish()
     }
 
-    listView.setOnScrollListener(object : AbsListView.OnScrollListener {
+    list_view.setOnScrollListener(object : AbsListView.OnScrollListener {
       override fun onScroll(absListView: AbsListView?, firstVisibleItem: Int, visibleItemCount: Int, totalItemCount: Int) {
-        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading) {
+        if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount && isLoading && count <= 4) {
           isLoading = false
           count++
           getAddTagItems(articleClient.tags("$count"))
@@ -101,14 +82,12 @@ class ListTagActivity : AppCompatActivity() {
       }
 
       override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
-
       }
     })
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
     if (keyCode == KeyEvent.KEYCODE_BACK) {
-      Log.e("back", "back")
       val intent = intent
       setResult(Activity.RESULT_OK, intent)
       finish()
@@ -121,12 +100,11 @@ class ListTagActivity : AppCompatActivity() {
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .doAfterTerminate { }
     .subscribe({
       listAdapter.articleTags = it
       listAdapter.notifyDataSetChanged()
     }, {
-      Log.e("error", "error: $it")
+      toast(getString(R.string.error_message))
     })
   }
 
@@ -140,11 +118,11 @@ class ListTagActivity : AppCompatActivity() {
     .subscribe({
       listAdapter.addList(it)
       listAdapter.notifyDataSetChanged()
-      var position = listView.firstVisiblePosition
-      var yOffset = listView.getChildAt(0).top
-      listView.setSelectionFromTop(position, yOffset)
+      var position = list_view.firstVisiblePosition
+      var yOffset = list_view.getChildAt(0).top
+      list_view.setSelectionFromTop(position, yOffset)
     }, {
-      Log.e("error", "error: $it")
+      toast(getString(R.string.error_message))
     })
   }
 }

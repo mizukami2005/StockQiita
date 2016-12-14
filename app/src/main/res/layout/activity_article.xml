@@ -22,7 +22,7 @@
             android:id="@+id/article_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
+            android:layout_marginTop="@dimen/margin_large"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
@@ -57,7 +57,7 @@
                 android:id="@+id/markdown_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="32dp"/>
+                android:layout_marginTop="@dimen/margin_large"/>
         </ScrollView>
 
     </android.support.v4.widget.NestedScrollView>
@@ -70,6 +70,6 @@
         android:src="@drawable/ic_folder_green"
         app:layout_anchorGravity="bottom|right|end"
         app:backgroundTint="@color/fab_background"
-        android:layout_marginRight="16dp"/>
+        android:layout_marginRight="@dimen/margin_normal"/>
 
 </android.support.design.widget.CoordinatorLayout>

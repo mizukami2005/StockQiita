@@ -1,66 +1,36 @@
 package com.example.mizukamitakamasa.qiitaclient
 
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentStatePagerAdapter
-import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.Toolbar
-import android.util.Log
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.*
 import com.example.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.example.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.example.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
-import com.example.mizukamitakamasa.qiitaclient.model.Article
 import com.example.mizukamitakamasa.qiitaclient.model.ResponseToken
 import com.example.mizukamitakamasa.qiitaclient.model.User
-import com.example.mizukamitakamasa.qiitaclient.util.AnimatorUtils
 import com.example.mizukamitakamasa.qiitaclient.util.PxDpUtil
 import com.example.mizukamitakamasa.qiitaclient.util.Config
 import com.example.mizukamitakamasa.qiitaclient.util.TagUtils
-import com.example.mizukamitakamasa.qiitaclient.view.ArticleView
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
-import org.json.JSONArray
+import kotlinx.android.synthetic.main.activity_main.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
-import java.io.BufferedInputStream
-import java.io.FileInputStream
-import java.io.InputStream
 import java.util.*
 import javax.inject.Inject
-import kotlin.properties.Delegates
 
 class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
-  override fun onPageScrollStateChanged(state: Int) {
-    Log.e("PageScrollStateChanged", "PageScrollStateChanged")
-  }
-
-  override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
-    Log.e("onPageScrolled", "onPageScrolled")
-  }
-
-  override fun onPageSelected(position: Int) {
-    Log.e("onPageSelected", "onPageSelected")
-  }
 
   @Inject
   lateinit var articleClient: ArticleClient
@@ -74,56 +44,23 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
   var state = ""
   var clientSecret = ""
 
-  val favBackground: View by lazy {
-    findViewById(R.id.fav_background)
-  }
-
-  val favButton: FloatingActionButton by lazy {
-    findViewById(R.id.fab_add) as FloatingActionButton
-  }
-
-  val fabLoginLayout: LinearLayout by lazy {
-    findViewById(R.id.fab_login_layout) as LinearLayout
-  }
-
-  val favLoginButton: FloatingActionButton by lazy {
-    findViewById(R.id.fav_login) as FloatingActionButton
-  }
-
-  val fabTagsLayout: LinearLayout by lazy {
-    findViewById(R.id.fab_tags_layout) as LinearLayout
-  }
-
-  val fabTagsButton: FloatingActionButton by lazy {
-    findViewById(R.id.fav_tags_button) as FloatingActionButton
-  }
-
-  val tabLayout: TabLayout by lazy {
-    findViewById(R.id.tabs) as TabLayout
-  }
-
-  val viewPager: ViewPager by lazy {
-    findViewById(R.id.pager) as ViewPager
-  }
-
   enum class ButtonState {
     OPEN, CLOSE
   }
 
   var buttonState: ButtonState = ButtonState.CLOSE
 
+  val TOKEN_PREFERENCES_NAME = "DataToken"
+  val TOKEN = "token"
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_main)
 
-    // ToolBarの設定
-    val mToolBar: Toolbar = findViewById(R.id.toolbar) as Toolbar
-    mToolBar.title = "QiitaClient"
-    setSupportActionBar(mToolBar)
+    setSupportActionBar(toolbar)
 
-    // TabLayoutの設定
-    tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+    tabs.tabMode = TabLayout.MODE_SCROLLABLE
     init()
 
     try {
@@ -137,36 +74,35 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       e.printStackTrace()
     }
 
-    favLoginButton.setOnClickListener {
-      val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-      val token = data.getString("token", "")
+    fab_login.setOnClickListener {
+      val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+      val token = data.getString(TOKEN, "")
       if (token.length == 0) {
         val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
         startActivity(intent)
       } else {
         val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-        builder.setTitle("ログアウト")
-        builder.setMessage("ログアウトしますか？")
-        builder.setPositiveButton("ログアウト", DialogInterface.OnClickListener { dialogInterface, i ->
-          val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+        builder.setTitle(getString(R.string.alert_dialog_title))
+        builder.setMessage(getString(R.string.alert_dialog_message))
+        builder.setPositiveButton(getString(R.string.positive_button_text), DialogInterface.OnClickListener { dialogInterface, i ->
+          val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
           val editor = data.edit()
-          editor.putString("token", "")
+          editor.putString(TOKEN, "")
           editor.apply()
         })
-        builder.setNegativeButton("キャンセル", null)
+        builder.setNegativeButton(getString(R.string.negative_button_text), null)
         builder.create().show()
       }
     }
 
-    fabTagsButton.setOnClickListener {
-      val tags = arrayListOf("Ruby", "Rails")
+    fab_tags_button.setOnClickListener {
+      val tags = arrayListOf("")
       val requestCode = 1001
       ListTagActivity.intent(applicationContext, tags).let { startActivityForResult(it, requestCode) }
     }
 
-    favButton.setOnClickListener {
+    fab_add.setOnClickListener {
       val iconWhile = PxDpUtil().dpToPx(applicationContext, 66)
-
       if (buttonState == ButtonState.CLOSE) {
         fabOpen(iconWhile)
       } else {
@@ -174,7 +110,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       }
     }
 
-    favBackground.setOnTouchListener { view, motionEvent ->
+    fab_background.setOnTouchListener { view, motionEvent ->
       true
     }
   }
@@ -184,8 +120,8 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     val intent = intent
     val action = intent.action
-    val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
-    val token = data.getString("token", "")
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val token = data.getString(TOKEN, "")
 
     if (Intent.ACTION_VIEW.equals(action) && token.length == 0) {
       val uri: Uri? = intent.data
@@ -204,65 +140,69 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
   }
 
+  override fun onPageScrollStateChanged(state: Int) {
+  }
+
+  override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+  }
+
+  override fun onPageSelected(position: Int) {
+  }
+
   private fun getAuthURL(authURL: String, clientID: String, scope: String, status: String): Uri =
       Uri.parse("$authURL?client_id=$clientID&scope=$scope&state=$status")
 
   private fun fabOpen(iconWhile: Float) {
-    fabLoginLayout.visibility = View.VISIBLE
-    var anim = ObjectAnimator.ofFloat(fabLoginLayout, "translationY", -iconWhile)
+    fab_login_layout.visibility = View.VISIBLE
+    var anim = ObjectAnimator.ofFloat(fab_login_layout, "translationY", -iconWhile)
     anim.setDuration(200)
     anim.start()
 
-    fabTagsLayout.visibility = View.VISIBLE
-    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", -iconWhile * 2)
+    fab_tags_layout.visibility = View.VISIBLE
+    anim = ObjectAnimator.ofFloat(fab_tags_layout, "translationY", -iconWhile * 2)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 0f, 1f)
+    anim = ObjectAnimator.ofFloat(fab_login_layout, "alpha", 0f, 1f)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 0f, 1f)
+    anim = ObjectAnimator.ofFloat(fab_tags_layout, "alpha", 0f, 1f)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(favButton, "rotation", 90f)
+    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 90f)
     anim.setDuration(200)
     anim.start()
 
     buttonState = ButtonState.OPEN
-    favBackground.visibility = View.VISIBLE
+    fab_background.visibility = View.VISIBLE
   }
 
   private fun fabClose() {
-    var anim = ObjectAnimator.ofFloat(fabLoginLayout, "translationY", 0f)
+    var anim = ObjectAnimator.ofFloat(fab_login_layout, "translationY", 0f)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fabTagsLayout, "translationY", 0f)
+    anim = ObjectAnimator.ofFloat(fab_tags_layout, "translationY", 0f)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fabLoginLayout, "alpha", 1f, 0f)
+    anim = ObjectAnimator.ofFloat(fab_login_layout, "alpha", 1f, 0f)
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fabTagsLayout, "alpha", 1f, 0f)
+    anim = ObjectAnimator.ofFloat(fab_tags_layout, "alpha", 1f, 0f)
     anim.setDuration(200)
     anim.start()
 
 
-    anim = ObjectAnimator.ofFloat(favButton, "rotation", 45f)
+    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 45f)
     anim.setDuration(200)
     anim.start()
 
     buttonState = ButtonState.CLOSE
-    favBackground.visibility = View.GONE
-  }
-
-  private fun loadTagList(context: Context, key: String): MutableSet<String> {
-    val prefs = context.getSharedPreferences("tag", Context.MODE_PRIVATE)
-    return prefs.getStringSet(key, mutableSetOf())
+    fab_background.visibility = View.GONE
   }
 
   private fun init() {
@@ -286,9 +226,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
       }
     }
 
-    viewPager.addOnPageChangeListener(this)
-    viewPager.adapter = viewPagerAdapter
-    tabLayout.setupWithViewPager(viewPager)
+    pager.addOnPageChangeListener(this)
+    pager.adapter = viewPagerAdapter
+    tabs.setupWithViewPager(pager)
   }
 
   public override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
@@ -304,23 +244,21 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
   private fun getToken(observable: Observable<ResponseToken>) {
     var token: String = ""
-    val data = getSharedPreferences("DataToken", Context.MODE_PRIVATE)
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
     val editor = data.edit()
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
     .doAfterTerminate {
-      getQiitaUser(qiitaClient.getUser("Bearer $token"))
+      if (token.length != 0) {
+        getQiitaUser(qiitaClient.getUser("Bearer $token"))
+      }
     }
     .bindToLifecycle(this)
     .subscribe({
       token = it.token
-      editor.putString("token", token)
+      editor.putString(TOKEN, token)
       editor.apply()
-      toast("Finish: $it")
-    }, {
-      Log.e("エラー", "エラー" + it)
-      toast("エラー: $it")
     })
   }
 
@@ -331,9 +269,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     .doAfterTerminate {  }
     .bindToLifecycle(this)
     .subscribe({
-      toast("ログインしました")
+      toast(applicationContext.getString(R.string.success_login_message))
     }, {
-      Log.e("エラー", "エラー" + it)
+      toast(applicationContext.getString(R.string.error_message))
     })
   }
 }
