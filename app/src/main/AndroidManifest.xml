@@ -32,9 +32,9 @@
                     android:scheme="android"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ArticleActivity">
+        <activity android:name=".view.activity.ArticleActivity">
         </activity>
-        <activity android:name=".ListTagActivity">
+        <activity android:name=".view.activity.ListTagActivity">
         </activity>
     </application>
 
