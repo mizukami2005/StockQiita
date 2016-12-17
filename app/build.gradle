@@ -6,7 +6,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
     defaultConfig {
-        applicationId "com.example.mizukamitakamasa.qiitaclient"
+        applicationId "com.mizukami2005.mizukamitakamasa.qiitaclient"
         minSdkVersion 17
         targetSdkVersion 24
         versionCode 1

@@ -18,11 +18,11 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleTextAppearance="@style/TextAppearance.AppCompat.Title">
 
-            <com.example.mizukamitakamasa.qiitaclient.view.ArticleView
+            <com.mizukami2005.mizukamitakamasa.qiitaclient.view.ArticleView
             android:id="@+id/article_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_large"></com.example.mizukamitakamasa.qiitaclient.view.ArticleView>
+            android:layout_marginTop="@dimen/margin_large"></com.mizukami2005.mizukamitakamasa.qiitaclient.view.ArticleView>
 
             <android.support.v7.widget.Toolbar
                 android:id="@+id/toolbar"
