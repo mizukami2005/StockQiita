@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
     android:padding="@dimen/margin_normal"
-    tools:context="com.example.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity">
+    tools:context="com.mizukami2005.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity">
 
     <ImageView
         android:id="@+id/tag_image_view"
