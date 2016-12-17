@@ -7,3 +7,13 @@ An unofficial Android application of technical information sharing service [Qiit
 ## Demo
 
 ![StockQiita demo](https://github.com/mizukami2005/qiita-client-app-android/blob/master/images/stock_qiita_demo.gif)
+
+## Licence
+
+The MIT License (MIT)
+
+Copyright (c) 2016 Takamasa Mizukami
+
+## Author
+
+[mizukami2005](https://github.com/mizukami2005)
