@@ -5,7 +5,7 @@
 #/.idea/workspace.xml
 #/.idea/libraries
 .DS_Store
-/app/src/main/kotlin/com/example/mizukamitakamasa/qiitaclient/util/Config.kt
+/app/src/main/kotlin/com/mizukami2005/mizukamitakamasa/qiitaclient/util/Config.kt
 /build
 /captures
 .externalNativeBuild
