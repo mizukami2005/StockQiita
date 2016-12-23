@@ -51,6 +51,9 @@ class ListTagActivity : AppCompatActivity() {
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_list_tag)
 
+    setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     val saveTagLists = TagUtils().loadName(applicationContext, "TAG")
     for (tag in saveTagLists) {
       checkTagList += tag
