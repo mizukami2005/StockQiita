@@ -94,6 +94,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
           val editor = data.edit()
           editor.putString(TOKEN, "")
           editor.apply()
+          login_text.text = getString(R.string.login)
         })
         builder.setNegativeButton(getString(R.string.negative_button_text), null)
         builder.create().show()
@@ -271,7 +272,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .doAfterTerminate {  }
+    .doAfterTerminate {
+      login_text.text = getString(R.string.logout)
+    }
     .bindToLifecycle(this)
     .subscribe({
       toast(applicationContext.getString(R.string.success_login_message))
