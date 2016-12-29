@@ -234,6 +234,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     pager.addOnPageChangeListener(this)
     pager.adapter = viewPagerAdapter
+    pager.offscreenPageLimit = pager.adapter.count - 1
     tabs.setupWithViewPager(pager)
   }
 
