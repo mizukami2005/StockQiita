@@ -82,7 +82,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     fab_login.setOnClickListener {
-      val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
       val token = data.getString(TOKEN, "")
       if (token.length == 0) {
         val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
@@ -92,7 +91,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
         builder.setTitle(getString(R.string.alert_dialog_title))
         builder.setMessage(getString(R.string.alert_dialog_message))
         builder.setPositiveButton(getString(R.string.positive_button_text), DialogInterface.OnClickListener { dialogInterface, i ->
-          val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
           val editor = data.edit()
           editor.putString(TOKEN, "")
           editor.apply()
