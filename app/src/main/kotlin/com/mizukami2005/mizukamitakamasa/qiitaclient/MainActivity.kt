@@ -62,6 +62,12 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     setSupportActionBar(toolbar)
 
     tabs.tabMode = TabLayout.MODE_SCROLLABLE
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val token = data.getString(TOKEN, "")
+    if (token.length != 0) {
+      login_text.text = getString(R.string.logout)
+    }
+
     init()
 
     try {
