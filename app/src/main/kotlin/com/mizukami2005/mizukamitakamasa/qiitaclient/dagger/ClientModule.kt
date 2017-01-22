@@ -1,5 +1,6 @@
 package com.mizukami2005.mizukamitakamasa.qiitaclient.dagger
 
+import com.google.gson.*
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.google.gson.FieldNamingPolicy
@@ -7,6 +8,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import io.realm.RealmObject
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,7 +22,16 @@ class ClientModule {
     @Singleton
     fun provideGson(): Gson = GsonBuilder()
             .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-            .create()
+            .setExclusionStrategies(object : ExclusionStrategy {
+                override fun shouldSkipField(f: FieldAttributes): Boolean {
+                    return f.declaredClass == RealmObject::class.java
+                }
+
+                override fun shouldSkipClass(clazz: Class<*>): Boolean {
+                    return false
+                }
+            })
+        .create()
 
     @Provides
     @Singleton
