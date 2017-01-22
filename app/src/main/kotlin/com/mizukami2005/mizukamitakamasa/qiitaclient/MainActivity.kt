@@ -16,6 +16,8 @@ import android.view.View
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
+import com.mizukami2005.mizukamitakamasa.qiitaclient.model.RealmArticle
+import com.mizukami2005.mizukamitakamasa.qiitaclient.model.RealmUser
 import com.mizukami2005.mizukamitakamasa.qiitaclient.model.ResponseToken
 import com.mizukami2005.mizukamitakamasa.qiitaclient.model.User
 import com.mizukami2005.mizukamitakamasa.qiitaclient.util.PxDpUtil
@@ -24,6 +26,7 @@ import com.mizukami2005.mizukamitakamasa.qiitaclient.util.TagUtils
 import com.mizukami2005.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -119,6 +122,8 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     fab_background.setOnTouchListener { view, motionEvent ->
       true
     }
+
+    Realm.init(this)
   }
 
   override fun onResume() {
@@ -234,7 +239,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
 
     pager.addOnPageChangeListener(this)
     pager.adapter = viewPagerAdapter
-    pager.offscreenPageLimit = pager.adapter.count - 1
     tabs.setupWithViewPager(pager)
   }
 
