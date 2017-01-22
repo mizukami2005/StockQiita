@@ -16,6 +16,8 @@ import android.view.View
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
+import com.mizukami2005.mizukamitakamasa.qiitaclient.model.RealmArticle
+import com.mizukami2005.mizukamitakamasa.qiitaclient.model.RealmUser
 import com.mizukami2005.mizukamitakamasa.qiitaclient.model.ResponseToken
 import com.mizukami2005.mizukamitakamasa.qiitaclient.model.User
 import com.mizukami2005.mizukamitakamasa.qiitaclient.util.PxDpUtil
@@ -24,6 +26,7 @@ import com.mizukami2005.mizukamitakamasa.qiitaclient.util.TagUtils
 import com.mizukami2005.mizukamitakamasa.qiitaclient.view.activity.ListTagActivity
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity
 import com.trello.rxlifecycle.kotlin.bindToLifecycle
+import io.realm.Realm
 import kotlinx.android.synthetic.main.activity_main.*
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
@@ -62,6 +65,12 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     setSupportActionBar(toolbar)
 
     tabs.tabMode = TabLayout.MODE_SCROLLABLE
+    val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    val token = data.getString(TOKEN, "")
+    if (token.length != 0) {
+      login_text.text = getString(R.string.logout)
+    }
+
     init()
 
     try {
@@ -76,7 +85,6 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     fab_login.setOnClickListener {
-      val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
       val token = data.getString(TOKEN, "")
       if (token.length == 0) {
         val intent = Intent(Intent.ACTION_VIEW, getAuthURL(authURL, clientID, scope, state))
@@ -86,10 +94,10 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
         builder.setTitle(getString(R.string.alert_dialog_title))
         builder.setMessage(getString(R.string.alert_dialog_message))
         builder.setPositiveButton(getString(R.string.positive_button_text), DialogInterface.OnClickListener { dialogInterface, i ->
-          val data = getSharedPreferences(TOKEN_PREFERENCES_NAME, Context.MODE_PRIVATE)
           val editor = data.edit()
           editor.putString(TOKEN, "")
           editor.apply()
+          login_text.text = getString(R.string.login)
         })
         builder.setNegativeButton(getString(R.string.negative_button_text), null)
         builder.create().show()
@@ -114,6 +122,8 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     fab_background.setOnTouchListener { view, motionEvent ->
       true
     }
+
+    Realm.init(this)
   }
 
   override fun onResume() {
@@ -267,7 +277,9 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     observable
     .subscribeOn(Schedulers.io())
     .observeOn(AndroidSchedulers.mainThread())
-    .doAfterTerminate {  }
+    .doAfterTerminate {
+      login_text.text = getString(R.string.logout)
+    }
     .bindToLifecycle(this)
     .subscribe({
       toast(applicationContext.getString(R.string.success_login_message))

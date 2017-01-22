@@ -7,17 +7,19 @@ import android.os.Parcelable
  * Created by mizukamitakamasa on 2016/09/25.
  */
 
-data class Article(val id: String,
-                   val title: String,
-                   val url: String,
-                   val body: String,
-                   val user: User) : Parcelable {
+data class Article(var id: String = "",
+                   var title: String = "",
+                   var url: String = "",
+                   var body: String = "",
+                   var createdAt: String = "",
+                   var type: String = "",
+                   var user: User = User()) : Parcelable {
 
   companion object {
     @JvmField
     val CREATOR: Parcelable.Creator<Article> = object : Parcelable.Creator<Article> {
       override fun createFromParcel(source: Parcel): Article = source.run {
-        Article(readString(), readString(), readString(), readString(), readParcelable(Article::class.java.classLoader))
+        Article(readString(), readString(), readString(), readString(), readString(), readString(), readParcelable(Article::class.java.classLoader))
       }
 
       override fun newArray(size: Int): Array<Article?> = arrayOfNulls(size)
@@ -32,6 +34,8 @@ data class Article(val id: String,
       writeString(title)
       writeString(url)
       writeString(body)
+      writeString(createdAt)
+      writeString(type)
       writeParcelable(user, flags)
     }
   }

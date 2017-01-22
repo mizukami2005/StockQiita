@@ -7,9 +7,9 @@ import android.os.Parcelable
  * Created by mizukamitakamasa on 2016/09/24.
  */
 
-data class User(val id: String,
-                val name: String,
-                val profileImageUrl: String) : Parcelable {
+data class User(var id: String = "",
+                var name: String = "",
+                var profileImageUrl: String = "") : Parcelable {
 
   companion object {
     @JvmField

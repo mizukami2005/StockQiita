@@ -30,4 +30,8 @@ class ArticleListAdapter(private val context: Context) : BaseAdapter() {
   fun addList(list: Array<Article>) {
     articles += list
   }
+
+  fun clear() {
+    articles = emptyArray<Article>()
+  }
 }

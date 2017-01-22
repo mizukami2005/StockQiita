@@ -6,6 +6,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.MenuItem
 import android.widget.AbsListView
 import com.mizukami2005.mizukamitakamasa.qiitaclient.QiitaClientApp
 import com.mizukami2005.mizukamitakamasa.qiitaclient.R
@@ -51,6 +52,9 @@ class ListTagActivity : AppCompatActivity() {
     (application as QiitaClientApp).component.inject(this)
     setContentView(R.layout.activity_list_tag)
 
+    setSupportActionBar(toolbar)
+    supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
     val saveTagLists = TagUtils().loadName(applicationContext, "TAG")
     for (tag in saveTagLists) {
       checkTagList += tag
@@ -89,6 +93,17 @@ class ListTagActivity : AppCompatActivity() {
       override fun onScrollStateChanged(p0: AbsListView?, p1: Int) {
       }
     })
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    when (item?.itemId) {
+      android.R.id.home -> {
+        val intent = intent
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+      }
+    }
+    return super.onOptionsItemSelected(item)
   }
 
   override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

@@ -12,6 +12,7 @@
 
     <!--FloatingActionButton-->
     <string name="login">ログイン</string>
+    <string name="logout">ログアウト</string>
 
     <!--AlertDialog-->
     <string name="alert_dialog_title">ログアウト</string>

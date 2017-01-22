@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ListView
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/page_list_view"
-    android:scrollbars="none"
+    android:id="@+id/swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"></ListView>
+    android:layout_height="wrap_content">
+
+    <ListView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/page_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none"></ListView>
+</android.support.v4.widget.SwipeRefreshLayout>
