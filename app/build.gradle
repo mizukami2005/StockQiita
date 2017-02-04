@@ -10,8 +10,8 @@ android {
         applicationId "com.mizukami2005.mizukamitakamasa.qiitaclient"
         minSdkVersion 17
         targetSdkVersion 24
-        versionCode 2
-        versionName "1.1"
+        versionCode 3
+        versionName "1.2"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -76,6 +76,8 @@ dependencies {
     provided 'javax.annotation:jsr250-api:1.0'
 
     compile 'com.github.mukeshsolanki:MarkdownView-Android:1.0.3'
+
+    compile 'com.joanzapata.iconify:android-iconify-material:2.2.2'
 }
 repositories {
     mavenCentral()

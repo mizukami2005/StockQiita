@@ -63,8 +63,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_normal"
-            android:layout_marginRight="@dimen/margin_normal"
-            android:src="@drawable/ic_account_circle_white"/>
+            android:layout_marginRight="@dimen/margin_normal"/>
 
     </LinearLayout>
 
@@ -93,8 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_normal"
-            android:layout_marginRight="@dimen/margin_normal"
-            android:src="@drawable/ic_local_offer_white"/>
+            android:layout_marginRight="@dimen/margin_normal"/>
 
     </LinearLayout>
 
@@ -106,8 +104,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_normal"
-        android:rotation="45"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
         app:backgroundTint="@color/colorPrimary"/>
 
     <ProgressBar
