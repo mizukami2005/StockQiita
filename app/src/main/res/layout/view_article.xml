@@ -44,7 +44,7 @@
         android:id="@+id/created_at_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="2017/09/12"
+        tools:text="@string/article_created_at"
         android:textColor="@android:color/black"
         android:textSize="@dimen/font_user_name"
         android:layout_alignBottom="@+id/user_id_text_view"
