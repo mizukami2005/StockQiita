@@ -29,7 +29,6 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="@dimen/margin_normal"
         android:layout_marginRight="@dimen/margin_normal"
-        android:src="@drawable/ic_home_white"
         app:backgroundTint="@color/colorPrimary"/>
 
 </RelativeLayout>
