@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.KeyEvent
 import android.view.MenuItem
 import android.widget.AbsListView
+import com.joanzapata.iconify.IconDrawable
+import com.joanzapata.iconify.fonts.MaterialIcons
 import com.mizukami2005.mizukamitakamasa.qiitaclient.QiitaClientApp
 import com.mizukami2005.mizukamitakamasa.qiitaclient.R
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.ArticleClient
@@ -75,6 +77,7 @@ class ListTagActivity : AppCompatActivity() {
       TagUtils().saveName(applicationContext, "TAG", checkTagList)
     }
 
+    home_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_home).colorRes(R.color.fab_background))
     home_button.setOnClickListener {
       val intent = intent
       setResult(Activity.RESULT_OK, intent)

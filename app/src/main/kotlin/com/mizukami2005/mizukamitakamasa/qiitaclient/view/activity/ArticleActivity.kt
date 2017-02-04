@@ -12,6 +12,8 @@ import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
+import com.joanzapata.iconify.IconDrawable
+import com.joanzapata.iconify.fonts.MaterialIcons
 import com.mizukami2005.mizukamitakamasa.qiitaclient.MainActivity
 import com.mizukami2005.mizukamitakamasa.qiitaclient.QiitaClientApp
 import com.mizukami2005.mizukamitakamasa.qiitaclient.R
@@ -85,7 +87,7 @@ class ArticleActivity : AppCompatActivity() {
     })
 
     processCheck(articleClient.checkStock("Bearer $token", article.id))
-
+    stock_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.colorQiita))
     stock_button.setOnClickListener {
       changeStockUnstock()
     }
@@ -94,8 +96,9 @@ class ArticleActivity : AppCompatActivity() {
   override fun onCreateOptionsMenu(menu: Menu): Boolean {
     if (isMenu) {
       menuInflater.inflate(R.menu.menu_main, menu)
+      menu.findItem(R.id.action_stock).setIcon(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.fab_background).actionBarSize())
       if (checkStock) {
-        menu.findItem(R.id.action_stock).setIcon(R.drawable.item_folder_red)
+        menu.findItem(R.id.action_stock).setIcon(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.stocked_article).actionBarSize())
       }
     }
     return super.onCreateOptionsMenu(menu)
@@ -118,7 +121,7 @@ class ArticleActivity : AppCompatActivity() {
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
       )
       stock_button.backgroundTintList = stateList
-      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      stock_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.fab_background))
       checkStock = true
     }, {
       checkStock = false
@@ -154,14 +157,14 @@ class ArticleActivity : AppCompatActivity() {
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#C9302C"))
       )
       stock_button.backgroundTintList = stateList
-      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_white, null))
+      stock_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.fab_background))
       processStock(articleClient.stock("Bearer $token", article.id), true)
     } else if (token.length != 0 && checkStock) {
       val stateList = ColorStateList(
           arrayOf<IntArray>(intArrayOf()), intArrayOf(Color.parseColor("#FFFFFF"))
       )
       stock_button.backgroundTintList = stateList
-      stock_button.setImageDrawable(ResourcesCompat.getDrawable(resources, R.drawable.ic_folder_green, null))
+      stock_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_folder).colorRes(R.color.colorQiita))
       processStock(articleClient.unStock("Bearer $token", article.id), false)
     } else {
       toast(getString(R.string.not_login_message))
