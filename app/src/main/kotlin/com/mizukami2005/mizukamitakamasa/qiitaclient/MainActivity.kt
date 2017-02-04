@@ -13,6 +13,10 @@ import android.support.v4.app.FragmentStatePagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.view.View
+import com.joanzapata.iconify.IconDrawable
+import com.joanzapata.iconify.Iconify
+import com.joanzapata.iconify.fonts.MaterialIcons
+import com.joanzapata.iconify.fonts.MaterialModule
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.ArticleClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.client.QiitaClient
 import com.mizukami2005.mizukamitakamasa.qiitaclient.fragment.ViewPageListFragment
@@ -124,6 +128,10 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     }
 
     Realm.init(this)
+    Iconify.with(MaterialModule())
+    fab_add.setImageDrawable(IconDrawable(this, MaterialIcons.md_add).colorRes(R.color.fab_background))
+    fab_login.setImageDrawable(IconDrawable(this, MaterialIcons.md_person).colorRes(R.color.fab_background))
+    fab_tags_button.setImageDrawable(IconDrawable(this, MaterialIcons.md_local_offer).colorRes(R.color.fab_background))
   }
 
   override fun onResume() {
@@ -182,7 +190,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     anim.setDuration(200)
     anim.start()
 
-    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 90f)
+    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 45f)
     anim.setDuration(200)
     anim.start()
 
@@ -208,7 +216,7 @@ class MainActivity : RxAppCompatActivity(), ViewPager.OnPageChangeListener {
     anim.start()
 
 
-    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 45f)
+    anim = ObjectAnimator.ofFloat(fab_add, "rotation", 90f)
     anim.setDuration(200)
     anim.start()
 
