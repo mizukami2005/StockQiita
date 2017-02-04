@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.mizukami2005.mizukamitakamasa.qiitaclient.R
 import com.mizukami2005.mizukamitakamasa.qiitaclient.model.Article
 import kotlinx.android.synthetic.main.view_article.view.*
+import java.text.SimpleDateFormat
 
 /**
  * Created by mizukamitakamasa on 2016/09/25.
@@ -37,9 +38,13 @@ class ArticleView : FrameLayout {
   fun setArticle(article: Article, isArticleActivivty: Boolean = false) {
     title_text_view.text = article.title
     user_id_text_view.text = article.user.id
+    val format = SimpleDateFormat("yyyy-MM-dd")
+    val date = format.parse(article.createdAt)
+    created_at_text_view.text = SimpleDateFormat("yyyy-MM-dd").format(date)
     if (isArticleActivivty) {
       title_text_view.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
       user_id_text_view.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
+      created_at_text_view.setTextColor(ContextCompat.getColor(context, R.color.fab_background))
     }
     Glide.with(context).load(article.user.profileImageUrl).into(profile_image_view)
   }
